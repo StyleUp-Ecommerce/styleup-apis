@@ -22,64 +22,64 @@ using System.Threading.Tasks;
 namespace Domain.Services
 {
     public class PetService : ServiceBase<Pet, PetRequest, UserResponse, PetGetAllRequest>, IPetService
-	{
-		private readonly IValidator<PetRequest> _validator;
-		public PetService(ICoreProvider coreProvider, IUnitOfWork unitOfWork) : base(coreProvider, unitOfWork)
-		{
-		}
+    {
+        private readonly IValidator<PetRequest> _validator;
+        public PetService(ICoreProvider coreProvider, IUnitOfWork unitOfWork) : base(coreProvider, unitOfWork)
+        {
+        }
 
-		public async Task<UserResponse> GetUserRandomMessage(Guid id)
-		{
+        public async Task<UserResponse> GetUserRandomMessage(Guid id)
+        {
 
-			var user = await this.Repository.FirstOrDefaultAsync(u => u.Id == id);
+            var user = await this.Repository.FirstOrDefaultAsync(u => u.Id == id);
 
-			var newUser = new Pet()
-			{
-				Name = "HE",
-				Age = 20
-			};
+            var newUser = new Pet()
+            {
+                Name = "HE",
+                Age = 20
+            };
 
-			this.Repository.Add(newUser);
-			UnitOfWork.SaveChanges();
-			var errorDetails = new List<ErrorCodeDetail>();
+            this.Repository.Add(newUser);
+            UnitOfWork.SaveChanges();
+            var errorDetails = new List<ErrorCodeDetail>();
 
-			if (true)
-			{
-				errorDetails.Add(new ErrorCodeDetail { Message = "First name is required." });
-			}
+            if (true)
+            {
+                errorDetails.Add(new ErrorCodeDetail { Message = "First name is required." });
+            }
 
-			if (true)
-			{
-				errorDetails.Add(new ErrorCodeDetail { Message = "Last name is required." });
-			}
+            if (true)
+            {
+                errorDetails.Add(new ErrorCodeDetail { Message = "Last name is required." });
+            }
 
-			if (errorDetails.Any())
-			{
-				throw new DomainException("Validation failed.", "EER_1", null, 500, errorDetails);
-			}
+            if (errorDetails.Any())
+            {
+                throw new DomainException("Validation failed.", "EER_1", null, 500, errorDetails);
+            }
 
-			throw new Exception("error", new Exception("err"));
+            throw new Exception("error", new Exception("err"));
 
-			return null;
-		}
+            return null;
+        }
 
-		public async Task<bool> IsValidHuman(PetRequest userRequest)
-		{
-			return _validator.Validate(userRequest).IsValid;
-		}
+        public async Task<bool> IsValidHuman(PetRequest userRequest)
+        {
+            return _validator.Validate(userRequest).IsValid;
+        }
 
-		public async Task TriggerUpdateUserAge()
-		{
-			//var users = await this.Repository.GetAllAsync();
+        public async Task TriggerUpdateUserAge()
+        {
+            //var users = await this.Repository.GetAllAsync();
 
-			//foreach (var user in users)
-			//{
-			//	user.Age++;
-			//}
+            //foreach (var user in users)
+            //{
+            //	user.Age++;
+            //}
 
-			//var userslist = await users.ToListAsync();
-			//Repository.BatchUpdate(userslist,true);
-				
-		}
-	}
+            //var userslist = await users.ToListAsync();
+            //Repository.BatchUpdate(userslist,true);
+
+        }
+    }
 }

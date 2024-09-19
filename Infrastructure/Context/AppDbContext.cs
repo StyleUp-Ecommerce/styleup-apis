@@ -7,18 +7,18 @@ using Microsoft.AspNetCore.Identity;
 namespace Infrastructure.Context
 {
 
-	public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
-	{
-		protected string Schema { get; set; } = "StyleUp";
-		protected string TablePrefix { get; set; } = "Entity_";
-		
-		public AppDbContext()
-		{ 
-		}
-		public AppDbContext(DbContextOptions<AppDbContext> options)
-		   : base(options)
-		{
-		}
+    public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
+    {
+        protected string Schema { get; set; } = "StyleUp";
+        protected string TablePrefix { get; set; } = "Entity_";
+
+        public AppDbContext()
+        {
+        }
+        public AppDbContext(DbContextOptions<AppDbContext> options)
+           : base(options)
+        {
+        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -37,8 +37,8 @@ namespace Infrastructure.Context
         public DbSet<TemplateCanvas> TemplateCanvases { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-		{
-			base.OnModelCreating(modelBuilder);
-		}
-	}
+        {
+            base.OnModelCreating(modelBuilder);
+        }
+    }
 }

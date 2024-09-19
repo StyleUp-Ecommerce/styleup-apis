@@ -14,13 +14,13 @@ using Infrastructure.Extensions;
 
 namespace Infrastructure
 {
-	public static class InfrastructureBootstrapper
-	{
-		public static IServiceCollection RegisterInfrastructureService(
-			this IServiceCollection services, 
-			IConfiguration configuration)
-		{
-			JobBootStrapper.UseHangfireBackgroundJob(services);
+    public static class InfrastructureBootstrapper
+    {
+        public static IServiceCollection RegisterInfrastructureService(
+            this IServiceCollection services,
+            IConfiguration configuration)
+        {
+            JobBootStrapper.UseHangfireBackgroundJob(services);
 
             services.Configure<AppConfig>(configuration.GetSection(nameof(AppConfig)));
 
@@ -29,7 +29,7 @@ namespace Infrastructure
 
             services.RegisterJobConsumers();
 
-			return services;
-		}
-	}
+            return services;
+        }
+    }
 }

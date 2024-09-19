@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace Core.ViewModels.Requests.User
 {
-	public record VerifyEmailRequest(string Email, string Token);
+    public record VerifyEmailRequest(string Email, string Token);
 }

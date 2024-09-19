@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 
 namespace Core.Settings
 {
-	public class GeneralSetting : AppSettings<GeneralSetting>
-	{
-		[JsonConverter(typeof(StringEnumConverter))]
-		public AppENV AppEnv { get; set; } = AppENV.DEV;
+    public class GeneralSetting : AppSettings<GeneralSetting>
+    {
+        [JsonConverter(typeof(StringEnumConverter))]
+        public AppENV AppEnv { get; set; } = AppENV.DEV;
 
-	}
+    }
 }

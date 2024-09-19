@@ -47,9 +47,9 @@ var config = builder.Configuration;
 
 // Configure logging
 Log.Logger = new LoggerConfiguration()
-	.Enrich.FromLogContext()
-	.WriteTo.Console()
-	.CreateLogger();
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .CreateLogger();
 
 builder.Services.AddSingleton(Log.Logger);
 
@@ -123,7 +123,7 @@ app.UseExceptionConfiguration();
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.UseCors(policy => policy
-   // .WithOrigins(config["Cors:AllowedHosts"]?.Split(',') ?? new[] { "*" })
+    // .WithOrigins(config["Cors:AllowedHosts"]?.Split(',') ?? new[] { "*" })
     .AllowAnyOrigin()
     .AllowAnyHeader()
     .AllowAnyMethod());

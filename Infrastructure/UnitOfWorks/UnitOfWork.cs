@@ -13,15 +13,15 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.UnitOfWorks
 {
-	public class UnitOfWorkGeneral : EFUnitOfWorkIdentity<User>, IBaseUnitOfWorks
-	{
-		public UnitOfWorkGeneral(ICoreProvider coreProvider, AppDbContext context) : base(coreProvider, context)
-		{
-		}
+    public class UnitOfWorkGeneral : EFUnitOfWorkIdentity<User>, IBaseUnitOfWorks
+    {
+        public UnitOfWorkGeneral(ICoreProvider coreProvider, AppDbContext context) : base(coreProvider, context)
+        {
+        }
 
-		protected override void InitRepositoriesMapping()
-		{
-			base.InitRepositoriesMapping();
-		}
-	}
+        protected override void InitRepositoriesMapping()
+        {
+            base.InitRepositoriesMapping();
+        }
+    }
 }

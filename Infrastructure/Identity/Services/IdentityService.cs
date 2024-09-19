@@ -19,47 +19,47 @@ using System.Threading.Tasks;
 namespace Infrastructure.Identity.Services
 {
     public sealed class IdentityService : IIdentityService
-{
-    private readonly ILogger<IdentityService> _logger;
-    private readonly UserManager<User> _userManager;
-    private readonly IPasswordHasher<User> _passwordHasher;
-    private readonly SignInManager<User> _signInManager;
-
-    public IdentityService(
-        ILogger<IdentityService> logger,
-        UserManager<User> userManager,
-        IPasswordHasher<User> passwordHasher,
-        SignInManager<User> signInManager
-    )
     {
-        _logger = logger;
-        _userManager = userManager;
-        _passwordHasher = passwordHasher;
-        _signInManager = signInManager;
-    }
+        private readonly ILogger<IdentityService> _logger;
+        private readonly UserManager<User> _userManager;
+        private readonly IPasswordHasher<User> _passwordHasher;
+        private readonly SignInManager<User> _signInManager;
 
-    public async Task<User> FindUserAsync(FindUserRequest request)
-    {
-        try
+        public IdentityService(
+            ILogger<IdentityService> logger,
+            UserManager<User> userManager,
+            IPasswordHasher<User> passwordHasher,
+            SignInManager<User> signInManager
+        )
         {
-            var result = await _userManager.FindByEmailAsync(request.Email).ConfigureAwait(false);
-            return result;
+            _logger = logger;
+            _userManager = userManager;
+            _passwordHasher = passwordHasher;
+            _signInManager = signInManager;
         }
-        catch (Exception ex)
+
+        public async Task<User> FindUserAsync(FindUserRequest request)
         {
-            _logger.LogError(ex, ex.Message, nameof(FindUserAsync));
-            throw;
+            try
+            {
+                var result = await _userManager.FindByEmailAsync(request.Email).ConfigureAwait(false);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message, nameof(FindUserAsync));
+                throw;
+            }
         }
-    }
 
 
         public async Task<object> CreateUserAsync(CreateUserRequest request)
-    {
-        try
         {
-            var searchResult = await FindUserAsync(new(request.Email));
+            try
+            {
+                var searchResult = await FindUserAsync(new(request.Email));
 
-            if(searchResult is not null)
+                if (searchResult is not null)
                     throw new DomainException("User is already exits. ", "USER_EXITS", null, 400, null);
 
                 var user = request.ToEntity();
@@ -71,21 +71,21 @@ namespace Infrastructure.Identity.Services
                     throw new DomainException("Cannot create user. ", "ERROR", null, 500, null);
 
                 return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message, nameof(CreateUserAsync));
+                throw;
+            }
         }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, ex.Message, nameof(CreateUserAsync));
-            throw;
-        }
-    }
 
-    public async Task<string> GenerateEmailVerificationTokenAsync(string email)
-    {
-        try
+        public async Task<string> GenerateEmailVerificationTokenAsync(string email)
         {
-            var searchResult = await FindUserAsync(new(email));
+            try
+            {
+                var searchResult = await FindUserAsync(new(email));
 
-            if (searchResult is null)
+                if (searchResult is null)
                     throw new DomainException("User not exits. ", "ERROR", null, 400, null);
 
 
@@ -93,194 +93,194 @@ namespace Infrastructure.Identity.Services
                 .GenerateEmailConfirmationTokenAsync(searchResult)
                 .ConfigureAwait(false);
 
-            var result = Convert.ToBase64String(Encoding.UTF8.GetBytes(token));
+                var result = Convert.ToBase64String(Encoding.UTF8.GetBytes(token));
 
-            return result;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message, nameof(FindUserAsync));
+                throw;
+            }
         }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, ex.Message, nameof(FindUserAsync));
-            throw;
-        }
-    }
 
-    public async Task<object> VerifyEmailAsync(VerifyEmailRequest request)
-    {
-        try
+        public async Task<object> VerifyEmailAsync(VerifyEmailRequest request)
         {
-            var searchResult = await FindUserAsync(new(request.Email));
+            try
+            {
+                var searchResult = await FindUserAsync(new(request.Email));
 
-            if (searchResult is null)
+                if (searchResult is null)
                     throw new DomainException("User not exits. ", "ERROR", null, 500, null);
 
                 var token = Encoding.UTF8.GetString(Convert.FromBase64String(request.Token));
 
-            var result = await _userManager
-                .ConfirmEmailAsync(searchResult, token)
-                .ConfigureAwait(false);
+                var result = await _userManager
+                    .ConfirmEmailAsync(searchResult, token)
+                    .ConfigureAwait(false);
 
-            if (!result.Succeeded)
-                 throw new DomainException("Cannot comfirm email. ", "ERROR", null, 500, null);
-
-            var claimsResult = await _userManager
-                .AddClaimsAsync(searchResult, searchResult.SelectClaims())
-                .ConfigureAwait(false);
-
-            if (!claimsResult.Succeeded)
-                throw new DomainException("Cannot comfirm email. ", "ERROR", null, 500, null);
-
-            return true;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, ex.Message, nameof(VerifyEmailAsync));
-            throw;
-        }
-    }
-
-    public async Task<string> GenerateResetPasswordTokenAsync(string email)
-    {
-        try
-        {
-            var searchResult = await FindUserAsync(new(email));
-
-            if (searchResult is null)
-                 throw new DomainException("User not exits ", "ERROR", null, 400, null);
-
-            var token = await _userManager
-                .GeneratePasswordResetTokenAsync(searchResult)
-                .ConfigureAwait(false);
-
-            var result = Convert.ToBase64String(Encoding.UTF8.GetBytes(token));
-
-            return result;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, ex.Message, nameof(GenerateResetPasswordTokenAsync));
-            throw;
-        }
-    }
-
-    public async Task<object> ResetPasswordAsync(ResetPasswordRequest request)
-    {
-        try
-        {
-            var searchResult = await FindUserAsync(new(request.Email));
-
-            if (searchResult is null)
-                    throw new DomainException("User not exits. ", "ERROR", null, 400, null);
-
-            var token = Encoding.UTF8.GetString(Convert.FromBase64String(request.Token));
-
-            var result = await _userManager
-                .ResetPasswordAsync(searchResult, token, request.Password)
-                .ConfigureAwait(false);
-
-            if (!result.Succeeded)
-                throw new DomainException("Cannot reset password. ", "ERROR", null, 500, null);
-
-            return true;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, ex.Message, nameof(ResetPasswordAsync));
-            throw;
-        }
-    }
-
-    public async Task<object> ChangePasswordAsync(ChangePasswordRequest request)
-    {
-        try
-        {
-            var searchResult = await FindUserAsync(new(request.Email));
-            if (searchResult is null)
-                throw new DomainException("User not exits. ", "ERROR", null, 400, null);
-
-            var isOldPasswordCorrect = await _userManager
-                .CheckPasswordAsync(searchResult, request.OldPassword)
-                .ConfigureAwait(false);
-
-            if (!isOldPasswordCorrect)
-                throw new DomainException("Wrong old password. ", "ERROR", null, 400, null);
-
-            var user = searchResult;
-            user.PasswordHash = _passwordHasher.HashPassword(user, request.NewPassword);
-
-            var result = await _userManager.UpdateAsync(user).ConfigureAwait(false);
-            if (!result.Succeeded)
-                throw new DomainException("Cannot update ", "ERROR", null, 400, null);
-
-            return true;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, ex.Message, nameof(ChangePasswordAsync));
-            throw;
-        }
-    }
-
-    public async Task<object> DeleteUserAsync(FindUserRequest request)
-    {
-        try
-        {
-            var userSearchResult = await FindUserAsync(new(request.Email));
-
-            if (userSearchResult is null)
-                throw new DomainException("User not exits. ", "ERROR", null, 400, null);
-
-            var user = userSearchResult;
-            var result = await _userManager.DeleteAsync(user).ConfigureAwait(false);
-            if (!result.Succeeded)
-                throw new DomainException("Cannot delete. ", "ERROR", null, 500, null);
-
-            return true;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, ex.Message, nameof(DeleteUserAsync));
-            throw;
-        }
-    }
-
-    public async Task<object> RegisterExternalAsync(AuthenticateResult result)
-    {
-        try
-        {
-            var provider = result.SelectIdentityProvider();
-
-            var userId = result.SelectUserId();
-            var user = await _userManager.FindByLoginAsync(provider, userId).ConfigureAwait(false);
-
-            if (user is null)
-            {
-                user = result.Principal.ToEntity();
-                var userResult = await _userManager.CreateAsync(user).ConfigureAwait(false);
-
-                if (!userResult.Succeeded)
-                    throw new DomainException("Cannot create user. ", "ERROR", null, 500, null);
+                if (!result.Succeeded)
+                    throw new DomainException("Cannot comfirm email. ", "ERROR", null, 500, null);
 
                 var claimsResult = await _userManager
-                    .AddClaimsAsync(user, user.SelectClaims(provider))
+                    .AddClaimsAsync(searchResult, searchResult.SelectClaims())
                     .ConfigureAwait(false);
 
                 if (!claimsResult.Succeeded)
-                    throw new DomainException("Cannot add claims. ", "ERROR", null, 500, null);
+                    throw new DomainException("Cannot comfirm email. ", "ERROR", null, 500, null);
+
+                return true;
             }
-
-            var info = new UserLoginInfo(provider, userId, provider);
-
-            await _userManager.AddLoginAsync(user, info);
-            await _signInManager.SignInAsync(user, isPersistent: false);
-
-            return true;
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message, nameof(VerifyEmailAsync));
+                throw;
+            }
         }
-        catch (Exception ex)
+
+        public async Task<string> GenerateResetPasswordTokenAsync(string email)
         {
-            _logger.LogError(ex, ex.Message, nameof(RegisterExternalAsync));
-            throw;
+            try
+            {
+                var searchResult = await FindUserAsync(new(email));
+
+                if (searchResult is null)
+                    throw new DomainException("User not exits ", "ERROR", null, 400, null);
+
+                var token = await _userManager
+                    .GeneratePasswordResetTokenAsync(searchResult)
+                    .ConfigureAwait(false);
+
+                var result = Convert.ToBase64String(Encoding.UTF8.GetBytes(token));
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message, nameof(GenerateResetPasswordTokenAsync));
+                throw;
+            }
         }
-    }
+
+        public async Task<object> ResetPasswordAsync(ResetPasswordRequest request)
+        {
+            try
+            {
+                var searchResult = await FindUserAsync(new(request.Email));
+
+                if (searchResult is null)
+                    throw new DomainException("User not exits. ", "ERROR", null, 400, null);
+
+                var token = Encoding.UTF8.GetString(Convert.FromBase64String(request.Token));
+
+                var result = await _userManager
+                    .ResetPasswordAsync(searchResult, token, request.Password)
+                    .ConfigureAwait(false);
+
+                if (!result.Succeeded)
+                    throw new DomainException("Cannot reset password. ", "ERROR", null, 500, null);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message, nameof(ResetPasswordAsync));
+                throw;
+            }
+        }
+
+        public async Task<object> ChangePasswordAsync(ChangePasswordRequest request)
+        {
+            try
+            {
+                var searchResult = await FindUserAsync(new(request.Email));
+                if (searchResult is null)
+                    throw new DomainException("User not exits. ", "ERROR", null, 400, null);
+
+                var isOldPasswordCorrect = await _userManager
+                    .CheckPasswordAsync(searchResult, request.OldPassword)
+                    .ConfigureAwait(false);
+
+                if (!isOldPasswordCorrect)
+                    throw new DomainException("Wrong old password. ", "ERROR", null, 400, null);
+
+                var user = searchResult;
+                user.PasswordHash = _passwordHasher.HashPassword(user, request.NewPassword);
+
+                var result = await _userManager.UpdateAsync(user).ConfigureAwait(false);
+                if (!result.Succeeded)
+                    throw new DomainException("Cannot update ", "ERROR", null, 400, null);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message, nameof(ChangePasswordAsync));
+                throw;
+            }
+        }
+
+        public async Task<object> DeleteUserAsync(FindUserRequest request)
+        {
+            try
+            {
+                var userSearchResult = await FindUserAsync(new(request.Email));
+
+                if (userSearchResult is null)
+                    throw new DomainException("User not exits. ", "ERROR", null, 400, null);
+
+                var user = userSearchResult;
+                var result = await _userManager.DeleteAsync(user).ConfigureAwait(false);
+                if (!result.Succeeded)
+                    throw new DomainException("Cannot delete. ", "ERROR", null, 500, null);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message, nameof(DeleteUserAsync));
+                throw;
+            }
+        }
+
+        public async Task<object> RegisterExternalAsync(AuthenticateResult result)
+        {
+            try
+            {
+                var provider = result.SelectIdentityProvider();
+
+                var userId = result.SelectUserId();
+                var user = await _userManager.FindByLoginAsync(provider, userId).ConfigureAwait(false);
+
+                if (user is null)
+                {
+                    user = result.Principal.ToEntity();
+                    var userResult = await _userManager.CreateAsync(user).ConfigureAwait(false);
+
+                    if (!userResult.Succeeded)
+                        throw new DomainException("Cannot create user. ", "ERROR", null, 500, null);
+
+                    var claimsResult = await _userManager
+                        .AddClaimsAsync(user, user.SelectClaims(provider))
+                        .ConfigureAwait(false);
+
+                    if (!claimsResult.Succeeded)
+                        throw new DomainException("Cannot add claims. ", "ERROR", null, 500, null);
+                }
+
+                var info = new UserLoginInfo(provider, userId, provider);
+
+                await _userManager.AddLoginAsync(user, info);
+                await _signInManager.SignInAsync(user, isPersistent: false);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message, nameof(RegisterExternalAsync));
+                throw;
+            }
+        }
         public async Task<(string accessToken, string refreshToken)> GenerateTokensAsync(User user)
         {
             try

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Context
 {
-	public class ContextSeed
-	{
-		public async Task SeedData() { }
-	}
+    public class ContextSeed
+    {
+        public async Task SeedData() { }
+    }
 
 }

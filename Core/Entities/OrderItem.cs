@@ -9,21 +9,19 @@ using System.Threading.Tasks;
 
 namespace Core.Entities
 {
-    public class CartItem : EntityAuditActive
+    public class OrderItem : EntityAuditActive
     {
-
         public int Quantity { get; set; }
-
+        [Column(TypeName = "money")]
+        public decimal Price { get; set; }
         [Required]
-        public Guid CartId { get; set; }
-
+        public Guid OrderId { get; set; }
         [Required]
         public Guid CustomCanvasId { get; set; }
 
-        [ForeignKey("CartId")]
-        public virtual Cart Cart { get; set; }
+        [ForeignKey("OrderId")]
+        public virtual Order Order { get; set; }
         [ForeignKey("CustomCanvasId")]
         public virtual CustomCanvas CustomCanvas { get; set; }
-
     }
 }

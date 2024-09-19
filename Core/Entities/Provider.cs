@@ -11,7 +11,7 @@ namespace Core.Entities
         public string Address { get; set; }
         public string Phone { get; set; }
         public string Email { get; set; }
-        [Column(TypeName  = "money")]
+        [Column(TypeName = "money")]
         public decimal MinimumPrice { get; set; }
 
         public string Colors { get; set; }
@@ -39,8 +39,8 @@ namespace Core.Entities
             set => Strengths = value.SerializeEnumList();
         }
 
-        public ICollection<ProviderRate> ProviderRates { get; set; }
-        public ICollection<TemplateCanvas> TemplateCanvas { get; set; }
+        public virtual ICollection<ProviderRate>? ProviderRates { get; set; }
+        public virtual ICollection<TemplateCanvas>? TemplateCanvas { get; set; }
 
     }
 

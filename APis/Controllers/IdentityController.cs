@@ -40,7 +40,7 @@ public class IdentityController : ApiControllerBase
     {
         var result = await _identityService.CreateUserAsync(request);
 
-        
+
 
         return CreateSuccessResult(result);
     }

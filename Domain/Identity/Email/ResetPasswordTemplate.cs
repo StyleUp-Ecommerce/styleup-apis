@@ -10,20 +10,20 @@ using System.Threading.Tasks;
 
 namespace Domain.Identity.Email
 {
-	public class ResetPasswordTemplate : IEmailClassifier
-	{
-		public bool Classified(EmailType type) => EmailType.ResetPassword == type;
+    public class ResetPasswordTemplate : IEmailClassifier
+    {
+        public bool Classified(EmailType type) => EmailType.ResetPassword == type;
 
-		public ClassifiedEmail GetEmail(IDictionary<string, string> bodyParameters)
-		{
-			ClassifiedEmail classified =
-				new()
-				{
-					Subject = EmailSubject.PasswordReset,
-					Body = EmailBody.PasswordReset(bodyParameters["fullName"], bodyParameters["url"])
-				};
+        public ClassifiedEmail GetEmail(IDictionary<string, string> bodyParameters)
+        {
+            ClassifiedEmail classified =
+                new()
+                {
+                    Subject = EmailSubject.PasswordReset,
+                    Body = EmailBody.PasswordReset(bodyParameters["fullName"], bodyParameters["url"])
+                };
 
-			return classified;
-		}
-	}
+            return classified;
+        }
+    }
 }

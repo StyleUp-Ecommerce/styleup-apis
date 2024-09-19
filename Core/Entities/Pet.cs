@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace Core.Entities
 {
-	public class Pet : EntityNameAuditActive
-	{
-		public int Age { get; set; }
-	}
+    public class Pet : EntityNameAuditActive
+    {
+        public int Age { get; set; }
+    }
 }

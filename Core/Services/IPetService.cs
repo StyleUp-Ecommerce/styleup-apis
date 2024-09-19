@@ -11,12 +11,12 @@ using System.Threading.Tasks;
 
 namespace Core.Services
 {
-	public interface 
-		IPetService : IServiceBase<Pet, PetRequest, UserResponse, PetGetAllRequest>
-	{
-		public Task<UserResponse> GetUserRandomMessage(Guid id);
+    public interface
+        IPetService : IServiceBase<Pet, PetRequest, UserResponse, PetGetAllRequest>
+    {
+        public Task<UserResponse> GetUserRandomMessage(Guid id);
 
-		public Task<bool> IsValidHuman(PetRequest userRequest);
-		Task TriggerUpdateUserAge();
-	}
+        public Task<bool> IsValidHuman(PetRequest userRequest);
+        Task TriggerUpdateUserAge();
+    }
 }

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Core.Identity.Email.Enums
 {
-	public enum EmailType
-	{
-		Verification,
-		ResetPassword
-	}
+    public enum EmailType
+    {
+        Verification,
+        ResetPassword
+    }
 }

@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Core.Settings
 {
-	public enum AppENV
-	{
-		DEV,
-		QA,
-		UAT,
-		PROD
-	}
+    public enum AppENV
+    {
+        DEV,
+        QA,
+        UAT,
+        PROD
+    }
 }

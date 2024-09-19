@@ -16,13 +16,11 @@ namespace Core.Entities
 
         [Column(TypeName = "jsonb")]
         public string Content { get; set; }
-        [Column(TypeName = "money")]
-        public decimal Price { get; set; }
 
         [Required]
         public Guid ProviderId { get; set; }
 
         [ForeignKey(nameof(ProviderId))]
-        public Provider Provider { get; set; }
+        public virtual Provider Provider { get; set; }
     }
 }

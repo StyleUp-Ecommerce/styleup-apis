@@ -12,24 +12,25 @@ namespace Core.Entities
     public class ProviderRate : EntityAuditActive
     {
         public int Start { get; set; }
-        public string Message { get; set; }
+        public string? Message { get; set; }
 
         [Required]
         public Guid AuthorId { get; set; }
 
-        [ForeignKey(nameof(AuthorId))]
-        public User Author { get; set; }
-
         [Required]
         public Guid OrderId { get; set; }
-
-        [ForeignKey(nameof(OrderId))]
-        public Order Order { get; set; }
 
         [Required]
         public Guid ProviderId { get; set; }
 
-        [ForeignKey(nameof(ProviderId))]    
-        public Provider Provider { get; set; }
+
+        [ForeignKey(nameof(OrderId))]
+        public virtual Order Order { get; set; }
+
+        [ForeignKey(nameof(AuthorId))]
+        public virtual User Author { get; set; }
+
+        [ForeignKey(nameof(ProviderId))]
+        public virtual Provider Provider { get; set; }
     }
 }

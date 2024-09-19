@@ -13,26 +13,26 @@ using System.Threading.Tasks;
 
 namespace Domain
 {
-	public static class DomainServiceBootstrapper
-	{
-		public static IServiceCollection RegisterDomainService(this IServiceCollection services)
-		{
-			services.AddScoped<IPetService, PetService>();
+    public static class DomainServiceBootstrapper
+    {
+        public static IServiceCollection RegisterDomainService(this IServiceCollection services)
+        {
+            services.AddScoped<IPetService, PetService>();
 
-			services.AddSingleton(_ =>
-			{
-				return new List<IEmailClassifier>()
-				{
-						new EmailVerificationTemplate(),
-						new ResetPasswordTemplate(),
-				};
-
-			});
             services.AddSingleton(_ =>
-			{
-				return new List<IExternalProvider>() { new GoogleProvider() };
-			});
+            {
+                return new List<IEmailClassifier>()
+                {
+                        new EmailVerificationTemplate(),
+                        new ResetPasswordTemplate(),
+                };
+
+            });
+            services.AddSingleton(_ =>
+            {
+                return new List<IExternalProvider>() { new GoogleProvider() };
+            });
             return services;
-		}
-	}
+        }
+    }
 }

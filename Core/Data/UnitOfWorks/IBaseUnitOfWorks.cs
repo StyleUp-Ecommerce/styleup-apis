@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Core.Data.UnitOfWorks
 {
-	public partial interface IBaseUnitOfWorks : IUnitOfWork
-	{
-	}
+    public partial interface IBaseUnitOfWorks : IUnitOfWork
+    {
+    }
 }

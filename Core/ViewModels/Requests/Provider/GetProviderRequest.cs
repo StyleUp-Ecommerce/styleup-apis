@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Constants
+namespace Core.ViewModels.Requests.Provider
 {
-    public static class JobNames
+    public class GetProviderRequest
     {
-        public static readonly string UPDATE_AGE = "UpdateAge";
+        public Guid MyProperty { get; set; }
     }
 }

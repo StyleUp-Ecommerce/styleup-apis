@@ -13,9 +13,13 @@ namespace Core.Entities
     public class Order : EntityAuditActive
     {
         public string Address { get; set; }
-
+        public string RecipientPhone { get; set; }
+        public string RecipientName { get; set; }
         [NotMapped]
         public StatusEnum Status { get; set; }
+
+        [Required]
+        public Guid AuthorId { get; set; }
 
         [Required]
         [MaxLength(20)]
@@ -25,9 +29,9 @@ namespace Core.Entities
             set => Status = Enum.TryParse(value, out StatusEnum status) ? status : default;
         }
 
-        [Required]
-        public Guid CartId { get; set; }
-        [ForeignKey(nameof(CartId))]
-        public Cart Cart { get; set; }
+        public virtual ICollection<OrderItem> OrderItems { get; set; }
+
+        [ForeignKey(nameof(AuthorId))]
+        public virtual User User { get; set; }
     }
 }

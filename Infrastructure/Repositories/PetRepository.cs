@@ -12,11 +12,11 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
-	public class PetRepository : EFRepositoryIdentity<Pet,User>, IPetRepository
-	{
-		public PetRepository(ICoreProvider coreProvider, AppDbContext context) : base(coreProvider, context)
-		{
-		}
-		
-	}
+    public class PetRepository : EFRepositoryIdentity<Pet, User>, IPetRepository
+    {
+        public PetRepository(ICoreProvider coreProvider, AppDbContext context) : base(coreProvider, context)
+        {
+        }
+
+    }
 }

@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace Core.Identity.Email.Interfaces
 {
-	public interface IEmailClassifier
-	{
-		bool Classified(EmailType type);
-		ClassifiedEmail GetEmail(IDictionary<string, string> parameters);
-	}
+    public interface IEmailClassifier
+    {
+        bool Classified(EmailType type);
+        ClassifiedEmail GetEmail(IDictionary<string, string> parameters);
+    }
 }

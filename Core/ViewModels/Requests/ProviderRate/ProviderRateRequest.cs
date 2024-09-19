@@ -5,11 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.ViewModels.Responses.User
+namespace Core.ViewModels.Requests.ProviderRate
 {
-    public class UserResponse : EntityAuditResponseBase
+    public class ProviderRateRequest : EntityAuditResponseBase
     {
-        public int Age { get; set; }
-        public string Message { get; set; }
+
     }
 }

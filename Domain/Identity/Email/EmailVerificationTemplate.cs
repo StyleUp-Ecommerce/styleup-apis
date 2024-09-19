@@ -10,20 +10,20 @@ using System.Threading.Tasks;
 
 namespace Domain.Identity.Email
 {
-	public class EmailVerificationTemplate : IEmailClassifier
-	{
-		public bool Classified(EmailType type) => EmailType.Verification == type;
+    public class EmailVerificationTemplate : IEmailClassifier
+    {
+        public bool Classified(EmailType type) => EmailType.Verification == type;
 
-		public ClassifiedEmail GetEmail(IDictionary<string, string> parameters)
-		{
-			ClassifiedEmail classified =
-				new()
-				{
-					Subject = EmailSubject.Verification,
-					Body = EmailBody.Verification(parameters["fullName"], parameters["url"])
-				};
+        public ClassifiedEmail GetEmail(IDictionary<string, string> parameters)
+        {
+            ClassifiedEmail classified =
+                new()
+                {
+                    Subject = EmailSubject.Verification,
+                    Body = EmailBody.Verification(parameters["fullName"], parameters["url"])
+                };
 
-			return classified;
-		}
-	}
+            return classified;
+        }
+    }
 }

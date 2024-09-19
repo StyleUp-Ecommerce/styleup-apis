@@ -52,7 +52,7 @@ namespace Infrastructure.Email
 
         public async Task SendAsync(EmailType type, string email, Dictionary<string, string> paramters)
         {
-             _logger.LogError("hi");
+            _logger.LogError("hi");
             //try
             //{
             //    ClassifiedEmail classifiedEmail = Classify(type, paramters);

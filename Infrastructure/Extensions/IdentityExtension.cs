@@ -75,7 +75,7 @@ namespace Infrastructure.Extensions
    },
                         OnTokenValidated = async context =>
                         {
-                            
+
                             var userName = context.Principal?.Identity?.Name;
                             var logger = context.HttpContext.RequestServices.GetService<ISmartLogger>();
                             logger.UserName = string.IsNullOrEmpty(userName) ? "anonymous" : userName;

@@ -11,17 +11,7 @@ namespace Core.Entities
 {
     public class Cart : EntityAuditActive
     {
-        public decimal TotalAmount { get; set; }
-
-
-        [Required]
-        public Guid UserId { get; set; }
-
-        [ForeignKey(nameof(UserId))]
-        public User User { get; set; }
-
-        public virtual ICollection<CartItem> CartItems { get; set; }
-        public virtual Order Order { get; set; }
+        public virtual ICollection<CartItem>? CartItems { get; set; }
     }
 
 }

@@ -16,6 +16,9 @@ namespace Core.Entities
         public string Content { get; set; }
         public bool IsPublic { get; set; } = false;
 
+        [Column(TypeName = "money")]
+        public decimal Price { get; set; }
+
         [NotMapped]
         public ColorEnum Color { get; set; }
         [Required]
@@ -32,9 +35,9 @@ namespace Core.Entities
         public Guid TemplateId { get; set; }
 
         [ForeignKey(nameof(AuthorId))]
-        public User Author { get; set; }
+        public virtual User Author { get; set; }
 
         [ForeignKey(nameof(TemplateId))]
-        public TemplateCanvas Template { get; set; }
+        public virtual TemplateCanvas Template { get; set; }
     }
 }

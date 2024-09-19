@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Core.ViewModels.Requests.Pet
 {
-	public class PetGetAllRequest : GetAllRequest
-	{
-	}
+    public class PetGetAllRequest : GetAllRequest
+    {
+    }
 }

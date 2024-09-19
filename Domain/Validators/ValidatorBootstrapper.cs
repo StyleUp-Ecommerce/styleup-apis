@@ -10,13 +10,13 @@ using System.Threading.Tasks;
 
 namespace Domain.Validators
 {
-	public static class ValidatorBootstrapper
-	{
-		public static IServiceCollection RegisterValidators(this IServiceCollection services)
-		{
-			services.AddScoped<IValidator<PetRequest>, PetValidator>();
+    public static class ValidatorBootstrapper
+    {
+        public static IServiceCollection RegisterValidators(this IServiceCollection services)
+        {
+            services.AddScoped<IValidator<PetRequest>, PetValidator>();
 
-			return services;
-		}
-	}
+            return services;
+        }
+    }
 }

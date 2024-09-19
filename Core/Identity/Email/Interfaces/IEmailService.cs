@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace Core.Identity.Email.Interfaces
 {
-	public interface IEmailService
-	{
-		Task SendAsync(EmailType type, string email, Dictionary<string, string> paramters);
-		ClassifiedEmail Classify(EmailType type, Dictionary<string, string> paramters);
-		Dictionary<string, string> GenerateEmailConfirmationParameters(User member, string token);
-		Dictionary<string, string> GenerateResetPasswordParameters(User member, string token);
-	}
+    public interface IEmailService
+    {
+        Task SendAsync(EmailType type, string email, Dictionary<string, string> paramters);
+        ClassifiedEmail Classify(EmailType type, Dictionary<string, string> paramters);
+        Dictionary<string, string> GenerateEmailConfirmationParameters(User member, string token);
+        Dictionary<string, string> GenerateResetPasswordParameters(User member, string token);
+    }
 }

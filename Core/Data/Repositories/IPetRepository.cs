@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Core.Data.Repositories
 {
-	public partial interface IPetRepository : IRepository<Pet>
-	{
-	}
+    public partial interface IPetRepository : IRepository<Pet>
+    {
+    }
 }

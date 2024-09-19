@@ -1,4 +1,5 @@
 ﻿using CleanBase.Core.Entities.Base;
+using CleanBase.Core.ViewModels.Request;
 using CleanBase.Core.ViewModels.Request.Base;
 using System;
 using System.Collections.Generic;
@@ -6,10 +7,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.ViewModels.Requests.Pet
+namespace Core.ViewModels.Requests.Provider
 {
-    public class PetRequest : EntityRequestBase
+    public class GetAllProviderRequest : GetAllRequest
     {
-        public int Age { get; set; }
+
     }
 }
