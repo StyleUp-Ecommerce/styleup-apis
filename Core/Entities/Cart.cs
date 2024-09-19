@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Core.Entities
 {
-    public class Cart : EntityAuditActive
+    public class Cart : EntityNameAuditActive
     {
         public virtual ICollection<CartItem>? CartItems { get; set; }
     }

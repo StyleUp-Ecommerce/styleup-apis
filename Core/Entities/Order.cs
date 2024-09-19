@@ -10,13 +10,13 @@ using System.Threading.Tasks;
 
 namespace Core.Entities
 {
-    public class Order : EntityAuditActive
+    public class Order : EntityNameAuditActive
     {
         public string Address { get; set; }
         public string RecipientPhone { get; set; }
         public string RecipientName { get; set; }
         [NotMapped]
-        public StatusEnum Status { get; set; }
+        public StatusEnum Status { get; set; } = StatusEnum.Pending;
 
         [Required]
         public Guid AuthorId { get; set; }

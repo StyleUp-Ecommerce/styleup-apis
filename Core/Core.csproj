@@ -16,17 +16,6 @@
 
   <ItemGroup>
     <Folder Include="ViewModels\Exports\" />
-    <Folder Include="ViewModels\Requests\Cart\" />
-    <Folder Include="ViewModels\Requests\CartItem\" />
-    <Folder Include="ViewModels\Requests\CustomCanvas\" />
-    <Folder Include="ViewModels\Requests\TemplateCanvas\" />
-    <Folder Include="ViewModels\Requests\Order\" />
-    <Folder Include="ViewModels\Responses\CartItem\" />
-    <Folder Include="ViewModels\Responses\Cart\" />
-    <Folder Include="ViewModels\Responses\CustomCanvas\" />
-    <Folder Include="ViewModels\Responses\Order\" />
-    <Folder Include="ViewModels\Responses\ProviderRate\" />
-    <Folder Include="ViewModels\Responses\TemplateCanvas\" />
   </ItemGroup>
 
 </Project>

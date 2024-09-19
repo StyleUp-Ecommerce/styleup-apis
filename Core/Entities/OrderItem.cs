@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Core.Entities
 {
-    public class OrderItem : EntityAuditActive
+    public class OrderItem : EntityNameAuditActive
     {
         public int Quantity { get; set; }
         [Column(TypeName = "money")]

@@ -39,6 +39,10 @@ namespace Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("Name")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
                     b.Property<Guid>("UpdatedBy")
                         .HasMaxLength(36)
                         .HasColumnType("uuid");
@@ -48,7 +52,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Carts");
+                    b.ToTable("Cart");
                 });
 
             modelBuilder.Entity("Core.Entities.CartItem", b =>
@@ -74,6 +78,10 @@ namespace Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("Name")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
                     b.Property<int>("Quantity")
                         .HasColumnType("integer");
 
@@ -90,7 +98,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("CustomCanvasId");
 
-                    b.ToTable("CartItems");
+                    b.ToTable("CartItem");
                 });
 
             modelBuilder.Entity("Core.Entities.CustomCanvas", b =>
@@ -103,6 +111,11 @@ namespace Infrastructure.Migrations
                     b.Property<Guid>("AuthorId")
                         .HasColumnType("uuid");
 
+                    b.Property<string>("ColorString")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("jsonb");
@@ -114,11 +127,19 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
                     b.Property<bool>("IsPublic")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("LensVRUrl")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .HasMaxLength(255)
@@ -126,11 +147,6 @@ namespace Infrastructure.Migrations
 
                     b.Property<decimal>("Price")
                         .HasColumnType("money");
-
-                    b.Property<string>("StatusString")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
 
                     b.Property<Guid>("TemplateId")
                         .HasColumnType("uuid");
@@ -148,7 +164,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("TemplateId");
 
-                    b.ToTable("CustomCanvases");
+                    b.ToTable("CustomCanvas");
                 });
 
             modelBuilder.Entity("Core.Entities.Order", b =>
@@ -175,6 +191,10 @@ namespace Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("Name")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
                     b.Property<string>("RecipientName")
                         .IsRequired()
                         .HasColumnType("text");
@@ -199,7 +219,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("AuthorId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Order");
                 });
 
             modelBuilder.Entity("Core.Entities.OrderItem", b =>
@@ -221,6 +241,10 @@ namespace Infrastructure.Migrations
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
                     b.Property<Guid>("OrderId")
                         .HasColumnType("uuid");
@@ -304,7 +328,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Providers");
+                    b.ToTable("Provider");
                 });
 
             modelBuilder.Entity("Core.Entities.ProviderRate", b =>
@@ -330,6 +354,10 @@ namespace Infrastructure.Migrations
                     b.Property<string>("Message")
                         .HasColumnType("text");
 
+                    b.Property<string>("Name")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
                     b.Property<Guid>("OrderId")
                         .HasColumnType("uuid");
 
@@ -354,7 +382,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("ProviderId");
 
-                    b.ToTable("ProviderRates");
+                    b.ToTable("ProviderRate");
                 });
 
             modelBuilder.Entity("Core.Entities.TemplateCanvas", b =>
@@ -404,7 +432,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("ProviderId");
 
-                    b.ToTable("TemplateCanvases");
+                    b.ToTable("TemplateCanvas");
                 });
 
             modelBuilder.Entity("Core.Entities.User", b =>
@@ -415,6 +443,9 @@ namespace Infrastructure.Migrations
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
+
+                    b.Property<string>("AvatarUrl")
+                        .HasColumnType("text");
 
                     b.Property<Guid>("CartId")
                         .HasColumnType("uuid");

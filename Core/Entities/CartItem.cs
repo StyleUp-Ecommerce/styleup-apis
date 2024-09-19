@@ -9,9 +9,8 @@ using System.Threading.Tasks;
 
 namespace Core.Entities
 {
-    public class CartItem : EntityAuditActive
+    public class CartItem : EntityNameAuditActive
     {
-
         public int Quantity { get; set; }
 
         [Required]

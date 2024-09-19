@@ -27,7 +27,7 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Carts",
+                name: "Cart",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", maxLength: 36, nullable: false),
@@ -35,15 +35,16 @@ namespace Infrastructure.Migrations
                     UpdatedBy = table.Column<Guid>(type: "uuid", maxLength: 36, nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    Name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Carts", x => x.Id);
+                    table.PrimaryKey("PK_Cart", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Providers",
+                name: "Provider",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", maxLength: 36, nullable: false),
@@ -63,7 +64,7 @@ namespace Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Providers", x => x.Id);
+                    table.PrimaryKey("PK_Provider", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -94,6 +95,7 @@ namespace Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     FirstName = table.Column<string>(type: "text", nullable: false),
                     LastName = table.Column<string>(type: "text", nullable: false),
+                    AvatarUrl = table.Column<string>(type: "text", nullable: true),
                     CartId = table.Column<Guid>(type: "uuid", nullable: false),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -114,15 +116,15 @@ namespace Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AspNetUsers_Carts_CartId",
+                        name: "FK_AspNetUsers_Cart_CartId",
                         column: x => x.CartId,
-                        principalTable: "Carts",
+                        principalTable: "Cart",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "TemplateCanvases",
+                name: "TemplateCanvas",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", maxLength: 36, nullable: false),
@@ -139,11 +141,11 @@ namespace Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TemplateCanvases", x => x.Id);
+                    table.PrimaryKey("PK_TemplateCanvas", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_TemplateCanvases_Providers_ProviderId",
+                        name: "FK_TemplateCanvas_Provider_ProviderId",
                         column: x => x.ProviderId,
-                        principalTable: "Providers",
+                        principalTable: "Provider",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -234,7 +236,7 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Orders",
+                name: "Order",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", maxLength: 36, nullable: false),
@@ -247,13 +249,14 @@ namespace Infrastructure.Migrations
                     UpdatedBy = table.Column<Guid>(type: "uuid", maxLength: 36, nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    Name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Orders", x => x.Id);
+                    table.PrimaryKey("PK_Order", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Orders_AspNetUsers_AuthorId",
+                        name: "FK_Order_AspNetUsers_AuthorId",
                         column: x => x.AuthorId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -261,14 +264,16 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CustomCanvases",
+                name: "CustomCanvas",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", maxLength: 36, nullable: false),
                     Content = table.Column<string>(type: "jsonb", nullable: false),
+                    ImageUrl = table.Column<string>(type: "text", nullable: false),
+                    LensVRUrl = table.Column<string>(type: "text", nullable: false),
                     IsPublic = table.Column<bool>(type: "boolean", nullable: false),
                     Price = table.Column<decimal>(type: "money", nullable: false),
-                    StatusString = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    ColorString = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
                     AuthorId = table.Column<Guid>(type: "uuid", nullable: false),
                     TemplateId = table.Column<Guid>(type: "uuid", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uuid", maxLength: 36, nullable: false),
@@ -280,23 +285,23 @@ namespace Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CustomCanvases", x => x.Id);
+                    table.PrimaryKey("PK_CustomCanvas", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CustomCanvases_AspNetUsers_AuthorId",
+                        name: "FK_CustomCanvas_AspNetUsers_AuthorId",
                         column: x => x.AuthorId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_CustomCanvases_TemplateCanvases_TemplateId",
+                        name: "FK_CustomCanvas_TemplateCanvas_TemplateId",
                         column: x => x.TemplateId,
-                        principalTable: "TemplateCanvases",
+                        principalTable: "TemplateCanvas",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProviderRates",
+                name: "ProviderRate",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", maxLength: 36, nullable: false),
@@ -309,33 +314,34 @@ namespace Infrastructure.Migrations
                     UpdatedBy = table.Column<Guid>(type: "uuid", maxLength: 36, nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    Name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProviderRates", x => x.Id);
+                    table.PrimaryKey("PK_ProviderRate", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ProviderRates_AspNetUsers_AuthorId",
+                        name: "FK_ProviderRate_AspNetUsers_AuthorId",
                         column: x => x.AuthorId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ProviderRates_Orders_OrderId",
+                        name: "FK_ProviderRate_Order_OrderId",
                         column: x => x.OrderId,
-                        principalTable: "Orders",
+                        principalTable: "Order",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ProviderRates_Providers_ProviderId",
+                        name: "FK_ProviderRate_Provider_ProviderId",
                         column: x => x.ProviderId,
-                        principalTable: "Providers",
+                        principalTable: "Provider",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "CartItems",
+                name: "CartItem",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", maxLength: 36, nullable: false),
@@ -346,21 +352,22 @@ namespace Infrastructure.Migrations
                     UpdatedBy = table.Column<Guid>(type: "uuid", maxLength: 36, nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    Name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CartItems", x => x.Id);
+                    table.PrimaryKey("PK_CartItem", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CartItems_Carts_CartId",
+                        name: "FK_CartItem_Cart_CartId",
                         column: x => x.CartId,
-                        principalTable: "Carts",
+                        principalTable: "Cart",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_CartItems_CustomCanvases_CustomCanvasId",
+                        name: "FK_CartItem_CustomCanvas_CustomCanvasId",
                         column: x => x.CustomCanvasId,
-                        principalTable: "CustomCanvases",
+                        principalTable: "CustomCanvas",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -378,21 +385,22 @@ namespace Infrastructure.Migrations
                     UpdatedBy = table.Column<Guid>(type: "uuid", maxLength: 36, nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    Name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_OrderItem", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_OrderItem_CustomCanvases_CustomCanvasId",
+                        name: "FK_OrderItem_CustomCanvas_CustomCanvasId",
                         column: x => x.CustomCanvasId,
-                        principalTable: "CustomCanvases",
+                        principalTable: "CustomCanvas",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_OrderItem_Orders_OrderId",
+                        name: "FK_OrderItem_Order_OrderId",
                         column: x => x.OrderId,
-                        principalTable: "Orders",
+                        principalTable: "Order",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -440,24 +448,29 @@ namespace Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_CartItems_CartId",
-                table: "CartItems",
+                name: "IX_CartItem_CartId",
+                table: "CartItem",
                 column: "CartId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CartItems_CustomCanvasId",
-                table: "CartItems",
+                name: "IX_CartItem_CustomCanvasId",
+                table: "CartItem",
                 column: "CustomCanvasId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CustomCanvases_AuthorId",
-                table: "CustomCanvases",
+                name: "IX_CustomCanvas_AuthorId",
+                table: "CustomCanvas",
                 column: "AuthorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CustomCanvases_TemplateId",
-                table: "CustomCanvases",
+                name: "IX_CustomCanvas_TemplateId",
+                table: "CustomCanvas",
                 column: "TemplateId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Order_AuthorId",
+                table: "Order",
+                column: "AuthorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderItem_CustomCanvasId",
@@ -470,28 +483,23 @@ namespace Infrastructure.Migrations
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Orders_AuthorId",
-                table: "Orders",
+                name: "IX_ProviderRate_AuthorId",
+                table: "ProviderRate",
                 column: "AuthorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProviderRates_AuthorId",
-                table: "ProviderRates",
-                column: "AuthorId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ProviderRates_OrderId",
-                table: "ProviderRates",
+                name: "IX_ProviderRate_OrderId",
+                table: "ProviderRate",
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProviderRates_ProviderId",
-                table: "ProviderRates",
+                name: "IX_ProviderRate_ProviderId",
+                table: "ProviderRate",
                 column: "ProviderId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TemplateCanvases_ProviderId",
-                table: "TemplateCanvases",
+                name: "IX_TemplateCanvas_ProviderId",
+                table: "TemplateCanvas",
                 column: "ProviderId");
         }
 
@@ -514,34 +522,34 @@ namespace Infrastructure.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "CartItems");
+                name: "CartItem");
 
             migrationBuilder.DropTable(
                 name: "OrderItem");
 
             migrationBuilder.DropTable(
-                name: "ProviderRates");
+                name: "ProviderRate");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "CustomCanvases");
+                name: "CustomCanvas");
 
             migrationBuilder.DropTable(
-                name: "Orders");
+                name: "Order");
 
             migrationBuilder.DropTable(
-                name: "TemplateCanvases");
+                name: "TemplateCanvas");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Providers");
+                name: "Provider");
 
             migrationBuilder.DropTable(
-                name: "Carts");
+                name: "Cart");
         }
     }
 }

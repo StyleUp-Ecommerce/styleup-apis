@@ -14,6 +14,10 @@ namespace Core.Entities
     {
         [Column(TypeName = "jsonb")]
         public string Content { get; set; }
+        [Required]
+        public string ImageUrl { get; set; }
+        [Required]
+        public string? LensVRUrl { get; set; }
         public bool IsPublic { get; set; } = false;
 
         [Column(TypeName = "money")]
@@ -23,7 +27,7 @@ namespace Core.Entities
         public ColorEnum Color { get; set; }
         [Required]
         [MaxLength(20)]
-        public string StatusString
+        public string ColorString
         {
             get => Color.ToString();
             set => Color = Enum.TryParse(value, out ColorEnum color) ? color : default;

@@ -1,4 +1,5 @@
 ﻿using CleanBase.Core.Entities;
+using CleanBase.Core.ViewModels.Request.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Core.ViewModels.Requests.Provider
 {
-    public class ProviderReqest : EntityNameAuditActive
+    public class ProviderRequest : EntityRequestBase
     {
         public string Address { get; set; }
         public string Phone { get; set; }

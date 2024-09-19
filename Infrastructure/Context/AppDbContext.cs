@@ -28,14 +28,6 @@ namespace Infrastructure.Context
             }
         }
 
-        public DbSet<Cart> Carts { get; set; }
-        public DbSet<CartItem> CartItems { get; set; }
-        public DbSet<CustomCanvas> CustomCanvases { get; set; }
-        public DbSet<Order> Orders { get; set; }
-        public DbSet<Provider> Providers { get; set; }
-        public DbSet<ProviderRate> ProviderRates { get; set; }
-        public DbSet<TemplateCanvas> TemplateCanvases { get; set; }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

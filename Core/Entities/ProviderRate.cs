@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Core.Entities
 {
-    public class ProviderRate : EntityAuditActive
+    public class ProviderRate : EntityNameAuditActive
     {
         public int Start { get; set; }
         public string? Message { get; set; }

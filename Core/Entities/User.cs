@@ -12,6 +12,7 @@ namespace Core.Entities
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public string? AvatarUrl { get; set; }
         public Guid CartId { get; set; }
 
         [ForeignKey(nameof(CartId))]
