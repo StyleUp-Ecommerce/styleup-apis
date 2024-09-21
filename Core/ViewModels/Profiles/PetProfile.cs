@@ -2,13 +2,7 @@
 using CleanBase.Core.ViewModels.Profiles;
 using Core.Entities;
 using Core.ViewModels.Requests.Pet;
-using Core.ViewModels.Requests.User;
 using Core.ViewModels.Responses.User;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Core.ViewModels.Profiles
 {

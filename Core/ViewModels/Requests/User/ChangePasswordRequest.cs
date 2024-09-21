@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Core.ViewModels.Requests.User
+﻿namespace Core.ViewModels.Requests.User
 {
     public record ChangePasswordRequest(string OldPassword, string NewPassword, string Email);
 }

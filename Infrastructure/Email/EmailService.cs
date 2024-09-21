@@ -5,11 +5,6 @@ using Core.Identity.Email.Models;
 using Infrastructure.Commons;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Email
 {

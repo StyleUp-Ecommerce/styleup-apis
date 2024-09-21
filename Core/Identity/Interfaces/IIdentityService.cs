@@ -1,14 +1,8 @@
-﻿using CleanBase.Core.ViewModels.Response.Generic;
-using Core.Entities;
+﻿using Core.Entities;
 using Core.ViewModels.Requests.Identity;
 using Core.ViewModels.Requests.User;
 using Core.ViewModels.Responses.Identity;
 using Microsoft.AspNetCore.Authentication;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Core.Identity.Interfaces
 {

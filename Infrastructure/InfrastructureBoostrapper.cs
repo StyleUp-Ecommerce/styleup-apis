@@ -1,16 +1,12 @@
-﻿using Infrastructure.Context;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
-using CleanBase.Core.Infrastructure.Jobs;
-using Infrastructure.Jobs;
-using CleanBase.Core.Infrastructure.Services;
-using Infrastructure.Commons;
-using Microsoft.Extensions.Configuration;
-using Core.Identity.Interfaces;
+﻿using CleanBase.Core.Infrastructure.Jobs;
 using Core.Identity.Email.Interfaces;
-using Infrastructure.Identity.Services;
+using Core.Identity.Interfaces;
+using Infrastructure.Commons;
 using Infrastructure.Email;
-using Infrastructure.Extensions;
+using Infrastructure.Identity.Services;
+using Infrastructure.Jobs;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Infrastructure
 {

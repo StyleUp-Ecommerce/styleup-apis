@@ -1,8 +1,7 @@
-﻿using Core.Constants;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using CleanBase.Core.Entities;
+﻿using CleanBase.Core.Entities;
+using Core.Constants;
 using Core.Helpers;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Core.Entities
 {

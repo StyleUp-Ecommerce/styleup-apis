@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using AutoMapper;
 
 namespace Core.ViewModels.Profiles
 {

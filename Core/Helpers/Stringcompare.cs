@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Core.Helpers
+﻿namespace Core.Helpers
 {
     public class Stringcompare : IEqualityComparer<string>
     {

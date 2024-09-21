@@ -1,5 +1,5 @@
-﻿using Core.Identity.Email.Models;
-using Azure.Communication.Email;
+﻿using Azure.Communication.Email;
+using Core.Identity.Email.Models;
 
 namespace Domain.Extensions.Email
 {

@@ -1,10 +1,4 @@
-﻿using CleanBase.Core.Entities;
-using Core.ViewModels.Responses.CartItem;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Core.ViewModels.Responses.CartItem;
 
 namespace Core.ViewModels.Responses.Cart
 {

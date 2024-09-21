@@ -2,11 +2,6 @@
 using Duende.IdentityServer.Models;
 using IdentityModel;
 using Infrastructure.Commons;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DomainIdentityServerConstants = Core.IdentityServer.Constants.Authorization;
 namespace Infrastructure.Extensions;
 

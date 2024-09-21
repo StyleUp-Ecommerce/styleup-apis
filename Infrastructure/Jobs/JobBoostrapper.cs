@@ -1,10 +1,5 @@
 ﻿using CleanBase.Core.Services.Jobs;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 namespace Infrastructure.Jobs
 {
     public static class JobBoostrapper

@@ -5,11 +5,6 @@ using Core.Entities;
 using Core.Services;
 using Core.ViewModels.Requests.CustomCanvas;
 using Core.ViewModels.Responses.CustomCanvas;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Domain.Services
 {

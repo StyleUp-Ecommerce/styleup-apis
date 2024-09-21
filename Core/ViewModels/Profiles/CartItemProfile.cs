@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using CleanBase.Core.Domain.Generic;
+﻿using CleanBase.Core.Domain.Generic;
 using CleanBase.Core.ViewModels.Profiles;
 using Core.Entities;
 using Core.ViewModels.Requests.CartItem;

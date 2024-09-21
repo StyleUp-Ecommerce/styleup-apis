@@ -1,7 +1,6 @@
 ﻿using CleanBase.Core.Domain.Exceptions;
 using Core.Entities;
 using Core.Identity.Interfaces;
-using Core.Services;
 using Core.ViewModels.Requests.Identity;
 using Core.ViewModels.Requests.User;
 using Core.ViewModels.Responses.Identity;
@@ -10,11 +9,7 @@ using Infrastructure.Extensions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Identity.Services
 {
@@ -60,7 +55,7 @@ namespace Infrastructure.Identity.Services
                 var searchResult = await FindUserAsync(new(request.Email));
 
                 if (searchResult is not null)
-                    throw new DomainException("User is already exits. ", "USER_EXITS", null, 400, null);
+                    throw new DomainException("User already exists.", "USER_EXISTS", null, 400, null);
 
                 var user = request.ToEntity();
                 user.PasswordHash = _passwordHasher.HashPassword(user, request.Password);
@@ -68,7 +63,15 @@ namespace Infrastructure.Identity.Services
                 var result = await _userManager.CreateAsync(user).ConfigureAwait(false);
 
                 if (!result.Succeeded)
-                    throw new DomainException("Cannot create user. ", "ERROR", null, 500, null);
+                {
+                    var errorList = result.Errors.Select(error => new ErrorCodeDetail
+                    {
+                        Code = error.Code,
+                        Message = error.Description
+                    }).ToList();
+
+                    throw new DomainException("Failed to create user.", "USER_CREATION_FAILED", null, 400, errorList);
+                }
 
                 return result;
             }
@@ -78,6 +81,7 @@ namespace Infrastructure.Identity.Services
                 throw;
             }
         }
+
 
         public async Task<string> GenerateEmailVerificationTokenAsync(string email)
         {
@@ -308,7 +312,6 @@ namespace Infrastructure.Identity.Services
             if (searchResult == null)
                 throw new DomainException("Wrong password or email.", "ERROR", null, 400, null);
 
-            // Kiểm tra mật khẩu
             var isRightPassword = await _userManager
                 .CheckPasswordAsync(searchResult, request.Password)
                 .ConfigureAwait(false);

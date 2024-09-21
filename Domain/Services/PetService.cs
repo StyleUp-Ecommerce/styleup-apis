@@ -1,37 +1,27 @@
 ﻿using CleanBase.Core.Data.UnitOfWorks;
 using CleanBase.Core.Domain.Domain.Services.GenericBase;
 using CleanBase.Core.Domain.Exceptions;
-using CleanBase.Core.Security;
 using CleanBase.Core.Services.Core.Base;
 using CleanBase.Core.Validators.Generic;
 using Core.Entities;
-using Core.Helpers;
 using Core.Services;
 using Core.ViewModels.Requests.Pet;
-using Core.ViewModels.Requests.User;
 using Core.ViewModels.Responses.User;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Abstractions;
-using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Domain.Services
 {
     public class PetService : ServiceBase<Pet, PetRequest, UserResponse, PetGetAllRequest>, IPetService
     {
         private readonly IValidator<PetRequest> _validator;
+
         public PetService(ICoreProvider coreProvider, IUnitOfWork unitOfWork) : base(coreProvider, unitOfWork)
         {
         }
 
         public async Task<UserResponse> GetUserRandomMessage(Guid id)
         {
-
             var user = await this.Repository.FirstOrDefaultAsync(u => u.Id == id);
+
 
             var newUser = new Pet()
             {

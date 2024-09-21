@@ -1,18 +1,16 @@
-﻿using CleanBase.Core.Api.Controllers;
+﻿
+using CleanBase.Core.Api.Controllers;
 using CleanBase.Core.Domain.Generic;
 using CleanBase.Core.Services.Core.Base;
-using CleanBase.Core.Validators.Generic;
 using CleanBase.Core.ViewModels.Response;
-using Domain.Validators;
 using CleanBase.Core.ViewModels.Response.Generic;
 using Core.Entities;
 using Core.Services;
+using Core.ViewModels.Requests.ProviderRate;
+using Core.ViewModels.Responses.ProviderRate;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using Core.ViewModels.Requests.ProviderRate;
-using Core.ViewModels.Responses.ProviderRate;
-using Core.ViewModels.Responses.Provider;
 namespace APis.Controllers
 {
     [Route("api/[controller]")]

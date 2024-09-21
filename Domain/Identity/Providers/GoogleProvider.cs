@@ -4,11 +4,6 @@ using Core.Identity.Interfaces;
 using Core.ViewModels.Responses.Identity;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Domain.Identity.Providers
 {

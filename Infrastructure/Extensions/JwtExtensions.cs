@@ -2,8 +2,6 @@
 using Infrastructure.Commons;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -32,12 +30,11 @@ namespace Infrastructure.Extensions
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(userClaims), // Chứa các claim của người dùng
-                Expires = DateTime.UtcNow.AddMinutes(_appConfig.JwtConfig.TokenExpirationInMinutes), // Thời gian hết hạn token
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature), // Thuật toán mã hóa và key để ký token
-
-                Issuer = _appConfig.JwtConfig.Issuer, // `Issuer` trong token phải khớp với phần cấu hình
-                Audience = _appConfig.JwtConfig.Audience // `Audience` trong token
+                Subject = new ClaimsIdentity(userClaims),
+                Expires = DateTime.UtcNow.AddMinutes(_appConfig.JwtConfig.TokenExpirationInMinutes),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
+                //Issuer = _appConfig.JwtConfig.Issuer,
+                //Audience = _appConfig.JwtConfig.Audience
             };
 
             var token = tokenHandler.CreateToken(tokenDescriptor);

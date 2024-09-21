@@ -1,7 +1,4 @@
-﻿using System.IO;
-using System.Threading.Tasks;
-
-namespace Core.Helpers
+﻿namespace Core.Helpers
 {
     public static class PathHelper
     {

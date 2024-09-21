@@ -5,11 +5,6 @@ using Domain.Identity.Email;
 using Domain.Identity.Providers;
 using Domain.Services;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Domain
 {
@@ -18,6 +13,14 @@ namespace Domain
         public static IServiceCollection RegisterDomainService(this IServiceCollection services)
         {
             services.AddScoped<IPetService, PetService>();
+            services.AddScoped<ICartService, CartService>();
+            services.AddScoped<ICartItemService, CartItemService>();
+            services.AddScoped<ICustomCanvasService, CustomCanvasService>();
+            services.AddScoped<IProviderRateService, ProviderRateService>();
+            services.AddScoped<IProviderService, ProviderService>();
+            services.AddScoped<ITemplateCanvasService, TemplateCanvasService>();
+            services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IOrderItemService, OrderItemService>();
 
             services.AddSingleton(_ =>
             {

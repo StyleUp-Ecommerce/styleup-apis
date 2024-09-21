@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace Core.Helpers
+﻿namespace Core.Helpers
 {
     public class PaginatedList<T> : List<T>
     {
