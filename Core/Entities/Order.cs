@@ -7,9 +7,18 @@ namespace Core.Entities
 {
     public class Order : EntityNameAuditActive
     {
+        [Required]
+        [MaxLength(200)]
         public string Address { get; set; }
+
+        [Required]
+        [MaxLength(15)]
         public string RecipientPhone { get; set; }
+
+        [Required]
+        [MaxLength(100)]
         public string RecipientName { get; set; }
+
         [NotMapped]
         public StatusEnum Status { get; set; } = StatusEnum.Pending;
 

@@ -6,7 +6,10 @@ namespace Core.Entities
 {
     public class ProviderRate : EntityNameAuditActive
     {
+        [Range(1, 5, ErrorMessage = "Start must be between 1 and 5.")]
         public int Start { get; set; }
+
+        [MaxLength(500, ErrorMessage = "Message cannot exceed 500 characters.")]
         public string? Message { get; set; }
 
         [Required]

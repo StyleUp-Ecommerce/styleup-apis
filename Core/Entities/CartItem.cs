@@ -6,7 +6,13 @@ namespace Core.Entities
 {
     public class CartItem : EntityNameAuditActive
     {
+        [Required]
+        [Range(1, int.MaxValue, ErrorMessage = "Quantity must be at least 1.")]
         public int Quantity { get; set; }
+
+        [Required]
+        [StringLength(5, ErrorMessage = "Size cannot exceed 5 characters.")]
+        public string Size { get; set; }
 
         [Required]
         public Guid CartId { get; set; }

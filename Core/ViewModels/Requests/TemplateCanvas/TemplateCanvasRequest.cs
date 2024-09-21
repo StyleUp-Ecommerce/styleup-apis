@@ -6,9 +6,7 @@ namespace Core.ViewModels.Requests.TemplateCanvas
     {
         public string Descriptions { get; set; }
         public string Image { get; set; }
-
         public string Content { get; set; }
-
         public Guid ProviderId { get; set; }
 
     }

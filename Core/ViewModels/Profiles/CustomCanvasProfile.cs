@@ -14,6 +14,8 @@ namespace Core.ViewModels.Profiles
             CreateMap<CustomCanvas, GetCustomCanvasResponse>();
             CreateMap<CustomCanvas, CustomCanvasResponse>();
             CreateMap<ListResult<CustomCanvas>, ListResult<CustomCanvasResponse>>();
+            CreateMap<CustomCanvas, CustomCanvasProductResponse>()
+                .ForMember(dest => dest.Color, opt => opt.MapFrom(src => src.ColorString));
         }
     }
 }

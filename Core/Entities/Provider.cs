@@ -1,15 +1,27 @@
 ﻿using CleanBase.Core.Entities;
 using Core.Constants;
 using Core.Helpers;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Core.Entities
 {
     public class Provider : EntityNameAuditActive
     {
+        [Required]
+        [MaxLength(200)]
         public string Address { get; set; }
+
+        [Required]
+        [MaxLength(15)]
         public string Phone { get; set; }
+
+        [Required]
+        [EmailAddress]
+        [MaxLength(100)]
         public string Email { get; set; }
+
+        [Range(0.01, double.MaxValue, ErrorMessage = "Minimum price must be greater than 0")]
         [Column(TypeName = "money")]
         public decimal MinimumPrice { get; set; }
 

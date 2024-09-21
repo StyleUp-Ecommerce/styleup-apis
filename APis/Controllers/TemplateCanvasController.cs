@@ -30,13 +30,24 @@ namespace APis.Controllers
             return await GetByIdInternal(id);
         }
 
+        [HttpGet("products/{id}")]
+        [AllowAnonymous]
+        [ProducesResponseType(typeof(ActionResponse<GetTemplateCanvasProductResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(FailActionResponse), (int)HttpStatusCode.BadRequest)]
+        public virtual async Task<IActionResult> GetProductsByTemplateId(Guid id)
+        {
+            var result = await Service.GetTemplateCanvasProductAsync(id);
+            return CreateSuccessResult(result);
+
+        }
         [HttpPost("get-basic")]
         [AllowAnonymous]
         [ProducesResponseType(typeof(ActionResponse<ListResult<TemplateCanvasResponse>>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(FailActionResponse), (int)HttpStatusCode.BadRequest)]
         public virtual async Task<IActionResult> GetAll([FromBody] GetAllTemplateCanvasRequest request)
         {
-            return await GetAllInternal(request);
+            var result = await this.Service.GetAllTemplateCanvasAsync(request);
+            return CreateSuccessResult(result);
         }
 
 
