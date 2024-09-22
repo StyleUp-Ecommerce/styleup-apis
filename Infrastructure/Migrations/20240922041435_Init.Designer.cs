@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240921024733_UpdateConstant")]
-    partial class UpdateConstant
+    [Migration("20240922041435_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -30,6 +30,9 @@ namespace Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(36)
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("AuthorId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("CreatedBy")
@@ -54,6 +57,8 @@ namespace Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
 
                     b.ToTable("Cart");
                 });
@@ -670,6 +675,17 @@ namespace Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Core.Entities.Cart", b =>
+                {
+                    b.HasOne("Core.Entities.User", "Author")
+                        .WithMany()
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Author");
+                });
+
             modelBuilder.Entity("Core.Entities.CartItem", b =>
                 {
                     b.HasOne("Core.Entities.Cart", "Cart")
@@ -698,7 +714,7 @@ namespace Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("Core.Entities.TemplateCanvas", "Template")
-                        .WithMany()
+                        .WithMany("CustomCanvas")
                         .HasForeignKey("TemplateId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -851,6 +867,11 @@ namespace Infrastructure.Migrations
                     b.Navigation("ProviderRates");
 
                     b.Navigation("TemplateCanvas");
+                });
+
+            modelBuilder.Entity("Core.Entities.TemplateCanvas", b =>
+                {
+                    b.Navigation("CustomCanvas");
                 });
 
             modelBuilder.Entity("Core.Entities.User", b =>

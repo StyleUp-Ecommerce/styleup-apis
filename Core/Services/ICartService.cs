@@ -7,5 +7,7 @@ namespace Core.Services
 {
     public interface ICartService : IServiceBase<Cart, CartRequest, CartResponse, GetAllCartRequest>
     {
+        public Task<CartResponse> AddToCart(AddToCartRequest request);
+        public Task<CartResponse> GetCartById(Guid id);
     }
 }

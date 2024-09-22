@@ -6,6 +6,6 @@ namespace Core.ViewModels.Responses.Cart
     public class CartResponse : EntityAuditResponseBase
     {
         public ICollection<CartItemResponse> Items { get; set; }
-        public int TotalPrice { get; set; }
+        public decimal TotalPrice { get; set; }
     }
 }

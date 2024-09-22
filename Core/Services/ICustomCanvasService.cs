@@ -7,5 +7,6 @@ namespace Core.Services
 {
     public interface ICustomCanvasService : IServiceBase<CustomCanvas, CustomCanvasRequest, GetCustomCanvasResponse, GetAllCustomCanvasRequest>
     {
+        Task<ICollection<CustomCanvas>> GetListByIds(List<Guid> ids);
     }
 }

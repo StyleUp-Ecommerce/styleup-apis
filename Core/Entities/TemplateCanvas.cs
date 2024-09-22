@@ -10,8 +10,8 @@ namespace Core.Entities
         public string Descriptions { get; set; }
 
         [Required]
-        [MaxLength(250, ErrorMessage = "Image path cannot exceed 250 characters.")]
-        public string Image { get; set; }
+        [Column(TypeName = "text")]
+        public string Images { get; set; }
 
         [Column(TypeName = "jsonb")]
         public string Content { get; set; }

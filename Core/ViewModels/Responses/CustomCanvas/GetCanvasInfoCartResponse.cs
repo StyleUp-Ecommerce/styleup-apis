@@ -1,9 +1,10 @@
-﻿namespace Core.ViewModels.Responses.CustomCanvas
+﻿using CleanBase.Core.ViewModels.Response.Base;
+
+namespace Core.ViewModels.Responses.CustomCanvas
 {
-    public class GetCanvasInfoCartResponse
+    public class GetCanvasInfoCartResponse : EntityNameResponseBase
     {
-        public int Price { get; set; }
+        public decimal Price { get; set; }
         public string ImageUrl { get; set; }
-        public string Name { get; set; }
     }
 }

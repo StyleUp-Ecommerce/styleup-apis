@@ -23,11 +23,13 @@ namespace APis.Controllers
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         [ProducesResponseType(typeof(ActionResponse<CartResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(FailActionResponse), (int)HttpStatusCode.BadRequest)]
         public virtual async Task<IActionResult> GetById(Guid id)
         {
-            return await GetByIdInternal(id);
+            var result = await Service.GetCartById(id);
+            return CreateSuccessResult(result);
         }
 
         [Authorize(
@@ -57,6 +59,16 @@ namespace APis.Controllers
         public virtual async Task<IActionResult> DeActive(Guid id)
         {
             return await DeActiveInternal(id);
+        }
+
+        [HttpPost("add-to-cart")]
+        [AllowAnonymous]
+        [ProducesResponseType(typeof(ActionResponse<bool>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(FailActionResponse), (int)HttpStatusCode.BadRequest)]
+        public virtual async Task<IActionResult> AddToCart(AddToCartRequest request)
+        {
+            var result = await Service.AddToCart(request);
+            return CreateSuccessResult(result);
         }
     }
 }

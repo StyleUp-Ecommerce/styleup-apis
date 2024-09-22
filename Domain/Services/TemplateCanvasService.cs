@@ -10,6 +10,7 @@ using Core.ViewModels.Requests.TemplateCanvas;
 using Core.ViewModels.Responses.CustomCanvas;
 using Core.ViewModels.Responses.TemplateCanvas;
 using Domain.Extensions.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace Domain.Services
 {
@@ -22,24 +23,38 @@ namespace Domain.Services
         public async Task<ListResult<GetAllTemplateCanvasResponse>> GetAllTemplateCanvasAsync(GetAllTemplateCanvasRequest request)
         {
             request.NormalizeData();
-            ListResult<TemplateCanvas> source = await this.ListAsync(request);
 
-            var resultItems = source.Items.Select(templateCanvas => new GetAllTemplateCanvasResponse
+            try
             {
-                Id = templateCanvas.Id,
-                Image = templateCanvas.Image,
-                Colors = templateCanvas.CustomCanvas != null && templateCanvas.CustomCanvas.Any()
-                    ? string.Join(",", templateCanvas.CustomCanvas.Select(c => c.ColorString))
-                    : string.Empty,
+                var source = GetAll(request, Math.Max(request.PageSize, 1))
+                    .Include(p => p.CustomCanvas)
+                    .Include(e => e.Provider);
 
-                MinPrice = templateCanvas.CustomCanvas?.Min(c => c.Price) ?? 0
-            }).ToList();
+                var resultItems = source.AsEnumerable()
+                    .Select(templateCanvas =>
+                    {
+                        var product = Mapper.Map<GetAllTemplateCanvasResponse>(templateCanvas);
+                        product.Colors = templateCanvas.CustomCanvas != null && templateCanvas.CustomCanvas.Any()
+                            ? string.Join(",", templateCanvas.CustomCanvas.Select(c => c.ColorString))
+                            : string.Empty;
 
-            return new ListResult<GetAllTemplateCanvasResponse>(resultItems, resultItems.Count)
+                        product.MinPrice = templateCanvas.CustomCanvas != null && templateCanvas.CustomCanvas.Any()
+                            ? templateCanvas.CustomCanvas.Min(c => c.Price)
+                            : 0;
+                        product.ProviderName = templateCanvas?.Provider?.Name;
+                        return product;
+                    }).ToList();
+
+                    return new ListResult<GetAllTemplateCanvasResponse>(resultItems, resultItems.Count)
+                    {
+                        Skiped = request.Skip,
+                        PageSize = request.PageSize,
+                    };
+            }
+            catch (Exception ex)
             {
-                Skiped = source.Skiped,
-                PageSize = source.PageSize,
-            };
+                throw new Exception(ex.Message);
+            }
         }
 
         public async Task<GetTemplateCanvasProductResponse> GetTemplateCanvasProductAsync(Guid id)

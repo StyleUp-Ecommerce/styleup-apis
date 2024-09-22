@@ -62,7 +62,7 @@ namespace Infrastructure.Jobs
             //		return Task.CompletedTask;
             //	}
             //}
-            _backgroundJob.Recurring<IPetService>(JobNames.UPDATE_AGE, sv => sv.TriggerUpdateUserAge(), "* * * * *", _timeZone);
+            //_backgroundJob.Recurring<IPetService>(JobNames.UPDATE_AGE, sv => sv.TriggerUpdateUserAge(), "* * * * *", _timeZone);
 
             //_backgroundJob.Recurring<IUserService>(JobNames.UPDATE_AGE,
             //	sv => sv.TriggerUpdateUserAge(), _cronExpression, _timeZone);

@@ -17,6 +17,7 @@ namespace Core.ViewModels.Profiles
                 .ForMember(dest => dest.Provider, opt => opt.MapFrom(src => src.Provider));
             CreateMap<ListResult<TemplateCanvas>, ListResult<TemplateCanvasResponse>>();
             CreateMap<List<TemplateCanvasResponse>, ListResult<TemplateCanvasResponse>>();
+            CreateMap<TemplateCanvas, GetAllTemplateCanvasResponse>();
 
         }
     }

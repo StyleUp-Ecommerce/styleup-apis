@@ -5,6 +5,7 @@ using Core.Entities;
 using Core.Services;
 using Core.ViewModels.Requests.CustomCanvas;
 using Core.ViewModels.Responses.CustomCanvas;
+using Microsoft.EntityFrameworkCore;
 
 namespace Domain.Services
 {
@@ -13,5 +14,16 @@ namespace Domain.Services
         public CustomCanvasService(ICoreProvider coreProvider, IUnitOfWork unitOfWork) : base(coreProvider, unitOfWork)
         {
         }
+
+        public async Task<ICollection<CustomCanvas>> GetListByIds(List<Guid> ids)
+        {
+            var canvases = await Repository
+                .Where(canvas => ids.Contains(canvas.Id))
+                .ToListAsync(); 
+
+            return canvases; 
+        }
+
+
     }
 }

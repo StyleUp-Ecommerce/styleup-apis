@@ -21,5 +21,37 @@ namespace Domain.Extensions.Linq
 
             return query.Select(selector);
         }
+
+        public static IQueryable<T> FilterByField<T>(this IQueryable<T> source, string filter)
+        {
+            if (string.IsNullOrEmpty(filter))
+            {
+                return source;
+            }
+
+            var filterParts = filter.Split('.');
+            if (filterParts.Length > 0)
+            {
+                return source.Where(CreateFilterExpression<T>(filterParts));
+            }
+
+            return source;
+        }
+
+        private static Expression<Func<T, bool>> CreateFilterExpression<T>(string[] filterParts)
+        {
+            var parameter = Expression.Parameter(typeof(T), "x");
+            Expression propertyAccess = parameter;
+
+            foreach (var part in filterParts)
+            {
+                propertyAccess = Expression.PropertyOrField(propertyAccess, part);
+            }
+
+            var value = Expression.Constant(filterParts.Last());
+            var equality = Expression.Equal(propertyAccess, value);
+
+            return Expression.Lambda<Func<T, bool>>(equality, parameter);
+        }
     }
 }

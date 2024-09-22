@@ -12,7 +12,11 @@ namespace Core.Entities
         public string Content { get; set; }
 
         [Required]
-        public string ImageUrl { get; set; }
+        [Column(TypeName = "text")]
+        public string Images { get; set; }
+
+        [Required]
+        public string Code { get; set; }
 
         [Required]
         public string? LensVRUrl { get; set; }

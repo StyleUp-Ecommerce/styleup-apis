@@ -6,5 +6,6 @@ namespace Core.ViewModels.Requests.CartItem
     {
         public int Quantity { get; set; }
         public int CustomCanvasId { get; set; }
+        public string Size { get; set; }
     }
 }

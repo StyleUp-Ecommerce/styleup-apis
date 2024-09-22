@@ -3,5 +3,6 @@ public enum ColorEnum
 {
     Red = 1,
     Blue = 2,
-    Green = 3
+    Green = 3,
+    Orange = 4
 }
