@@ -11,7 +11,7 @@ namespace Core.ViewModels.Responses.TemplateCanvas
     public class GetTemplateCanvasProductResponse
     {
         public List<CustomCanvasProductResponse> Products { get; set; }
-        public string ImagesUrl { get; set; }
+        public List<string> Images { get; set; }
         public string Colors {  get; set; }
         public string Name { get; set; }
 

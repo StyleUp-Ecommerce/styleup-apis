@@ -7,7 +7,7 @@ namespace Core.ViewModels.Responses.TemplateCanvas
     public class TemplateCanvasResponse : EntityAuditNameResponseBase
     {
         public string Descriptions { get; set; }
-        public string Image { get; set; }
+        public List<string> Images { get; set; }
         public String Colors { get; set; }
         public string Content { get; set; }
 

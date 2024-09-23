@@ -6,7 +6,7 @@ namespace Core.ViewModels.Responses.TemplateCanvas
     public class GetTemplateCanvasReponse : EntityNameAuditActive
     {
         public string Descriptions { get; set; }
-        public string Image { get; set; }
+        public List<string> Images { get; set; }
 
         public string Content { get; set; }
 

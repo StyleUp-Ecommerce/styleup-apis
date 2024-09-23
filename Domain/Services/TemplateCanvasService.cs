@@ -75,7 +75,7 @@ namespace Domain.Services
             return new GetTemplateCanvasProductResponse
             {
                 Products = customCanvasProduct,
-                ImagesUrl = templateCanvas.Image,
+                Images = templateCanvas.Images.Split(",").ToList(),
                 Colors = string.Join(",", customCanvasProduct.Select(p => p.Color)),
                 Name = templateCanvas.Name
             };

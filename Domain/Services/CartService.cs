@@ -80,7 +80,7 @@ namespace Domain.Services
                         {
                             Id= product.Id,
                             Price = product.Price,
-                            ImageUrl = product.ImageUrl,
+                            Images = product.Images.Split(",").ToList(),
                             Name = product.Name
                         }
                     };
@@ -95,14 +95,14 @@ namespace Domain.Services
             var authorId = new Guid("d7749509-d3c4-4c4f-8870-88997e75fcce");
 
             var cart = await Repository
-              .Where(p => p.AuthorId == authorId)
-              .Include(p => p.CartItems)
-              .SingleOrDefaultAsync()
-              ?? new Cart
-              {
-                  AuthorId = authorId,
-                  CartItems = new List<CartItem>()
-              };
+                .Where(p => p.AuthorId == authorId)
+                .Include(p => p.CartItems)
+                .SingleOrDefaultAsync()
+                ?? new Cart
+                {
+                    AuthorId = authorId,
+                    CartItems = new List<CartItem>()
+                };
 
             var canvasIds = cart.CartItems.Select(ci => ci.CustomCanvasId).ToList();
             var productDict = (await _customCanvasService.GetListByIds(canvasIds))
@@ -123,7 +123,7 @@ namespace Domain.Services
                         {
                             Id = product.Id,
                             Price = product.Price,
-                            ImageUrl = product.ImageUrl,
+                            Images = product.Images.Split(",").ToList(),
                             Name = product.Name
                         }
                     };

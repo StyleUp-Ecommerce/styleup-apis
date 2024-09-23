@@ -16,9 +16,6 @@ namespace Core.Entities
         public string Images { get; set; }
 
         [Required]
-        public string Code { get; set; }
-
-        [Required]
         public string? LensVRUrl { get; set; }
 
         public bool IsPublic { get; set; } = false;
@@ -46,6 +43,8 @@ namespace Core.Entities
         [Required]
         public Guid TemplateId { get; set; }
 
+        public Guid? DefaultVoucherId { get; set; }
+
         [NotMapped]
         public List<SizeEnum> SizeList
         {
@@ -58,5 +57,9 @@ namespace Core.Entities
 
         [ForeignKey(nameof(TemplateId))]
         public virtual TemplateCanvas Template { get; set; }
+
+
+        [ForeignKey(nameof(DefaultVoucherId))]
+        public virtual Voucher? Voucher { get; set; }
     }
 }

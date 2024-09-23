@@ -4,6 +4,7 @@ using Core.Services;
 using Domain.Identity.Email;
 using Domain.Identity.Providers;
 using Domain.Services;
+using Domain.Strategies;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Domain
@@ -21,6 +22,7 @@ namespace Domain
             services.AddScoped<ITemplateCanvasService, TemplateCanvasService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IOrderItemService, OrderItemService>();
+            services.AddScoped<IVoucherService, VoucherService>();
 
             services.AddSingleton(_ =>
             {
@@ -35,6 +37,8 @@ namespace Domain
             {
                 return new List<IExternalProvider>() { new GoogleProvider() };
             });
+
+            services.RegisTrageries();
             return services;
         }
     }

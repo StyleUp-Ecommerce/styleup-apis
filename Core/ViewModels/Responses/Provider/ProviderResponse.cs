@@ -8,7 +8,6 @@ namespace Core.ViewModels.Responses.Provider
         public string Phone { get; set; }
         public string Email { get; set; }
         public decimal MinimumPrice { get; set; }
-
         public string Colors { get; set; }
         public string Sizes { get; set; }
         public string Strengths { get; set; }

@@ -5,68 +5,62 @@ using CleanBase.Core.ViewModels.Response;
 using CleanBase.Core.ViewModels.Response.Generic;
 using Core.Entities;
 using Core.Services;
-using Core.ViewModels.Requests.Cart;
-using Core.ViewModels.Responses.Cart;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Core.ViewModels.Requests.Voucher;
+using Core.ViewModels.Responses.Voucher;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+
 namespace APis.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     [ApiExplorerSettings(IgnoreApi = false)]
-    public partial class CartController : CRUDBaseController<Cart, CartRequest, CartResponse, GetAllCartRequest, ICartService>
+    public partial class VoucherController : CRUDBaseController<Voucher, VoucherRequest, VoucherResponse, VoucherGetAllRequest, IVoucherService>
     {
-        public CartController(ICoreProvider coreProvider, ICartService service) : base(coreProvider, service)
+        public VoucherController(ICoreProvider coreProvider, IVoucherService service) : base(coreProvider, service)
         {
         }
 
         [HttpGet("{id}")]
         [AllowAnonymous]
-        [ProducesResponseType(typeof(ActionResponse<CartResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ActionResponse<VoucherResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(FailActionResponse), (int)HttpStatusCode.BadRequest)]
         public virtual async Task<IActionResult> GetById(Guid id)
         {
-            var result = await Service.GetCartById(id);
-            return CreateSuccessResult(result);
+            return await GetByIdInternal(id);
         }
 
-        [Authorize]
         [HttpPost("get-basic")]
-        [ProducesResponseType(typeof(ActionResponse<ListResult<CartResponse>>), (int)HttpStatusCode.OK)]
+        [AllowAnonymous]
+        [ProducesResponseType(typeof(ActionResponse<ListResult<VoucherResponse>>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(FailActionResponse), (int)HttpStatusCode.BadRequest)]
-        public virtual async Task<IActionResult> GetAll([FromBody] GetAllCartRequest request)
+        public virtual async Task<IActionResult> GetAll([FromBody] VoucherGetAllRequest request)
         {
             return await GetAllInternal(request);
         }
 
 
         [HttpPost]
-        [ProducesResponseType(typeof(ActionResponse<CartResponse>), (int)HttpStatusCode.OK)]
+        [AllowAnonymous]
+
+        [ProducesResponseType(typeof(ActionResponse<VoucherResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(FailActionResponse), (int)HttpStatusCode.BadRequest)]
-        public virtual async Task<IActionResult> CreateOrUpdate([FromBody] CartRequest entity)
+        public virtual async Task<IActionResult> CreateOrUpdate([FromBody] VoucherRequest entity)
         {
+
             return await CreateOrUpdateInternal(entity);
         }
 
 
         [HttpPost("delete/{id}")]
+        [AllowAnonymous]
+
         [ProducesResponseType(typeof(ActionResponse<bool>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(FailActionResponse), (int)HttpStatusCode.BadRequest)]
         public virtual async Task<IActionResult> DeActive(Guid id)
         {
             return await DeActiveInternal(id);
-        }
-
-        [HttpPost("add-to-cart")]
-        [AllowAnonymous]
-        [ProducesResponseType(typeof(ActionResponse<bool>), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(FailActionResponse), (int)HttpStatusCode.BadRequest)]
-        public virtual async Task<IActionResult> AddToCart(AddToCartRequest request)
-        {
-            var result = await Service.AddToCart(request);
-            return CreateSuccessResult(result);
         }
     }
 }

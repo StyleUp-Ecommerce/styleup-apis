@@ -9,12 +9,11 @@ namespace Core.Entities
         [MaxLength(1000, ErrorMessage = "Description cannot exceed 500 characters.")]
         public string Descriptions { get; set; }
 
-        [Required]
         [Column(TypeName = "text")]
-        public string Images { get; set; }
+        public string? Images { get; set; }
 
         [Column(TypeName = "jsonb")]
-        public string Content { get; set; }
+        public string? Content { get; set; }
 
         [Required]
         public Guid ProviderId { get; set; }

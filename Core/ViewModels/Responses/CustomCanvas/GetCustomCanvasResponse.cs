@@ -5,7 +5,7 @@ namespace Core.ViewModels.Responses.CustomCanvas
     public class GetCustomCanvasResponse : EntityAuditNameResponseBase
     {
         public string Content { get; set; }
-        public string ImageUrl { get; set; }
+        public List<string> Images { get; set; }
         public string? LensVRUrl { get; set; }
         public bool IsPublic { get; set; } = false;
         public decimal Price { get; set; }

@@ -30,7 +30,9 @@ public class IdentityController : ApiControllerBase
         _identityService = identityService;
     }
 
-    [AllowAnonymous]
+    [AllowAnonymous(
+            
+    )]
     [HttpPost("register")]
     [ProducesResponseType(typeof(ActionResponse<UserResponse>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(FailActionResponse), (int)HttpStatusCode.BadRequest)]

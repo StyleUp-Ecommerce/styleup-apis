@@ -10,7 +10,7 @@ namespace Core.ViewModels.Responses.TemplateCanvas
 {
     public class GetAllTemplateCanvasResponse : EntityAuditNameResponseBase
     {
-        public string Image { get; set; }
+        public List<string> Images { get; set; }
         public decimal MinPrice { get; set; }
         public String Colors { get; set; }
         public string ProviderName { get; set; }
