@@ -3,6 +3,7 @@ using System;
 using Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240924030759_ModifineFieldVoucher")]
+    partial class ModifineFieldVoucher
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -122,9 +125,6 @@ namespace Infrastructure.Migrations
                     b.Property<Guid>("AuthorId")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("CanvasCode")
-                        .HasColumnType("text");
-
                     b.Property<string>("ColorString")
                         .IsRequired()
                         .HasMaxLength(20)
@@ -202,7 +202,7 @@ namespace Infrastructure.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
-                    b.Property<Guid?>("AuthorId")
+                    b.Property<Guid>("AuthorId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("CreatedBy")
@@ -218,10 +218,6 @@ namespace Infrastructure.Migrations
                     b.Property<string>("Name")
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
-
-                    b.Property<string>("OrderCode")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<string>("RecipientName")
                         .IsRequired()
@@ -284,10 +280,6 @@ namespace Infrastructure.Migrations
 
                     b.Property<int>("Quantity")
                         .HasColumnType("integer");
-
-                    b.Property<string>("Size")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<Guid>("UpdatedBy")
                         .HasMaxLength(36)
@@ -456,9 +448,6 @@ namespace Infrastructure.Migrations
 
                     b.Property<Guid>("ProviderId")
                         .HasColumnType("uuid");
-
-                    b.Property<string>("TemplateCode")
-                        .HasColumnType("text");
 
                     b.Property<Guid>("UpdatedBy")
                         .HasMaxLength(36)
@@ -834,7 +823,9 @@ namespace Infrastructure.Migrations
                 {
                     b.HasOne("Core.Entities.User", "User")
                         .WithMany("Orders")
-                        .HasForeignKey("AuthorId");
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });

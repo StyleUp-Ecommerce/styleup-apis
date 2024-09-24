@@ -8,8 +8,8 @@ namespace Infrastructure.Context
 
     public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
     {
-        protected string Schema { get; set; } = "StyleUp";
-        protected string TablePrefix { get; set; } = "Entity_";
+        //protected string Schema { get; set; } = "StyleUp";
+        //protected string TablePrefix { get; set; } = "Entity_";
 
         public AppDbContext()
         {
