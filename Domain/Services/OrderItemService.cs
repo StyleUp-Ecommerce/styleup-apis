@@ -12,6 +12,7 @@ namespace Domain.Services
     {
         public OrderItemService(ICoreProvider coreProvider, IUnitOfWork unitOfWork) : base(coreProvider, unitOfWork)
         {
-        }
+        } 
+
     }
 }

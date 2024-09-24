@@ -7,5 +7,6 @@ namespace Core.Services
 {
     public interface IOrderItemService : IServiceBase<OrderItem, OrderItemRequest, OrderItemResponse, OrderItemGetAllRequest>
     {
+
     }
 }

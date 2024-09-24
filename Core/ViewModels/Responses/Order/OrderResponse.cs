@@ -5,13 +5,13 @@ namespace Core.ViewModels.Responses.Order
 {
     public class OrderResponse : EntityAuditActive
     {
-        public string Address { get; set; }
-        public string RecipientPhone { get; set; }
-        public string RecipientName { get; set; }
+        public string OrderStatus { get; set; }
+        public string OrderCode { get; set; }
+        public List<OrderItemDetailResponse> Items { get; set; }
+        public decimal TotalPrice { get; set; }
+        public string DiscountType { get; set; }
 
-        public Guid AuthorId { get; set; }
-        public string StatusString { get; set; }
+        public decimal DiscountValue { get; set; }
 
-        public virtual ICollection<OrderItemResponse> OrderItems { get; set; }
     }
 }

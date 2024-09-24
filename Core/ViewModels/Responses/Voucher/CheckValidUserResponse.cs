@@ -8,7 +8,6 @@ namespace Core.ViewModels.Responses.Voucher
 {
     public class CheckValidUserResponse
     {
-        public bool IsValid {  get; set; }
-        public string Message { get; set; }
+        
     }
 }

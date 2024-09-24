@@ -13,7 +13,6 @@ namespace Domain
     {
         public static IServiceCollection RegisterDomainService(this IServiceCollection services)
         {
-            services.AddScoped<IPetService, PetService>();
             services.AddScoped<ICartService, CartService>();
             services.AddScoped<ICartItemService, CartItemService>();
             services.AddScoped<ICustomCanvasService, CustomCanvasService>();
