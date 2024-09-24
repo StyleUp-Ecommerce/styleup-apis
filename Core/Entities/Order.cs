@@ -16,14 +16,15 @@ namespace Core.Entities
         public string RecipientPhone { get; set; }
 
         [Required]
+        public string OrderCode { get; set; }
+        [Required]
         [MaxLength(100)]
         public string RecipientName { get; set; }
 
         [NotMapped]
         public StatusEnum Status { get; set; } = StatusEnum.Pending;
 
-        [Required]
-        public Guid AuthorId { get; set; }
+        public Guid? AuthorId { get; set; }
 
         [Required]
         [MaxLength(20)]
@@ -36,6 +37,6 @@ namespace Core.Entities
         public virtual ICollection<OrderItem> OrderItems { get; set; }
 
         [ForeignKey(nameof(AuthorId))]
-        public virtual User User { get; set; }
+        public virtual User? User { get; set; }
     }
 }

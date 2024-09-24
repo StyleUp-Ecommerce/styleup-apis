@@ -15,6 +15,8 @@ namespace Core.Entities
         [Column(TypeName = "text")]
         public string Images { get; set; }
 
+        public string? CanvasCode { get; set; }
+
         [Required]
         public string? LensVRUrl { get; set; }
 

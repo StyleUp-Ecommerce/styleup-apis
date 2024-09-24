@@ -15,6 +15,9 @@ namespace Core.Entities
         public decimal Price { get; set; }
 
         [Required]
+        public string Size { get; set; }
+
+        [Required]
         public Guid OrderId { get; set; }
 
         [Required]

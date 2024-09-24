@@ -15,6 +15,7 @@ namespace Core.Entities
         [Column(TypeName = "jsonb")]
         public string? Content { get; set; }
 
+        public string? TemplateCode { get; set; }
         [Required]
         public Guid ProviderId { get; set; }
 
