@@ -14,5 +14,6 @@ namespace Core.Services
     public interface IVoucherService : IServiceBase<Voucher, VoucherRequest, VoucherResponse,VoucherGetAllRequest>
     {
         Task<VoucherResponse> CheckValidVoucherAsync(CheckValidVoucherRequest request);
+        Task<VoucherResponse> GetVoucherByCode(string code);
     }
 }

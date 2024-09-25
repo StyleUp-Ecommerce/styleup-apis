@@ -5,7 +5,9 @@ using Core.Entities;
 using Core.Services;
 using Core.ViewModels.Requests.CustomCanvas;
 using Core.ViewModels.Responses.CustomCanvas;
+using Domain.Extensions.Linq;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Domain.Services
 {
@@ -15,15 +17,15 @@ namespace Domain.Services
         {
         }
 
-        public async Task<ICollection<CustomCanvas>> GetListByIds(List<Guid> ids)
+        public async Task<Dictionary<Guid, CustomCanvas>> GetDictionaryByIds(List<Guid> ids, Expression<Func<CustomCanvas, object>>[] excludedProperties)
         {
-            var canvases = await Repository
-                .Where(canvas => ids.Contains(canvas.Id))
-                .ToListAsync(); 
+            var canvases = await Repository.Where(canvas => ids.Contains(canvas.Id))
+                                            .ExcludeProperties(excludedProperties)
+                                            .ToListAsync();
 
-            return canvases; 
+            var canvasDictionary = canvases.ToDictionary(canvas => canvas.Id);
+
+            return canvasDictionary;
         }
-
-
     }
 }

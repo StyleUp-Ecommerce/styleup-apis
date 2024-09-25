@@ -1,20 +1,29 @@
-﻿namespace Core.Helpers
+﻿using CleanBase.Core.Domain.Exceptions;
+
+namespace Core.Helpers
 {
     public static class EnumExtension
     {
         public static List<TEnum> ParseEnumList<TEnum>(this string data) where TEnum : struct
         {
-            return !string.IsNullOrEmpty(data)
-                ? data.Split(',')
-                      .Select(c => Enum.Parse<TEnum>(c.Trim()))
-                      .ToList()
-                : new List<TEnum>();
+            try
+            {
+                return !string.IsNullOrEmpty(data)
+                    ? data.Split(',')
+                        .Select(c => Enum.Parse<TEnum>(c.Trim().ToUpper()))
+                        .ToList()
+                    : new List<TEnum>();
+            }
+            catch(Exception ex)
+            {
+                throw new DomainException(ex.Message,"ERROR_VALUE",null,400,null);
+            }
         }
 
         public static string SerializeEnumList<TEnum>(this List<TEnum> enumList) where TEnum : struct
         {
             return enumList != null && enumList.Any()
-                ? string.Join(",", enumList.Select(e => e.ToString()))
+                ? string.Join(",", enumList.Select(e => e.ToString().ToUpper()))
                 : string.Empty;
         }
 

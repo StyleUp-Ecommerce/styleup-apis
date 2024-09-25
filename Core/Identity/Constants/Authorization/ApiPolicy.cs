@@ -1,6 +1,6 @@
 namespace Core.Identity.Constants.Authorization;
 
-public static class Policy
+public static class ApiPolicy
 {
     public const string ReadAccess = "read_access";
     public const string WriteAccess = "write_access";

@@ -1,14 +1,17 @@
 ﻿using CleanBase.Core.Domain.Exceptions;
 using Core.Entities;
 using Core.Identity.Interfaces;
+using Core.IdentityServer.Constants.Authorization;
 using Core.ViewModels.Requests.Identity;
 using Core.ViewModels.Requests.User;
 using Core.ViewModels.Responses.Identity;
 using Domain.Identity.Extensions;
+using IdentityModel;
 using Infrastructure.Extensions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using System.Security.Claims;
 using System.Text;
 
 namespace Infrastructure.Identity.Services
@@ -62,6 +65,7 @@ namespace Infrastructure.Identity.Services
 
                 var result = await _userManager.CreateAsync(user).ConfigureAwait(false);
 
+
                 if (!result.Succeeded)
                 {
                     var errorList = result.Errors.Select(error => new ErrorCodeDetail
@@ -72,7 +76,11 @@ namespace Infrastructure.Identity.Services
 
                     throw new DomainException("Failed to create user.", "USER_CREATION_FAILED", null, 400, errorList);
                 }
+                var claims = user.SelectClaims();
+                claims.Add(new Claim(JwtClaimTypes.Scope, ApiScope.Read));
+                claims.Add(new Claim(JwtClaimTypes.Scope, ApiScope.Delete));
 
+                await _userManager.AddClaimsAsync(user, claims).ConfigureAwait(false);
                 return result;
             }
             catch (Exception ex)

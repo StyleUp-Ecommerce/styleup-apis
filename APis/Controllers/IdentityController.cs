@@ -1,7 +1,9 @@
-﻿using CleanBase.Core.Api.Controllers;
+﻿using Amazon.Auth.AccessControlPolicy;
+using CleanBase.Core.Api.Controllers;
 using CleanBase.Core.Services.Core.Base;
 using CleanBase.Core.ViewModels.Response;
 using CleanBase.Core.ViewModels.Response.Generic;
+using Core.Identity.Constants.Authorization;
 using Core.Identity.Interfaces;
 using Core.ViewModels.Requests.Identity;
 using Core.ViewModels.Requests.User;
@@ -42,8 +44,6 @@ public class IdentityController : ApiControllerBase
     {
         var result = await _identityService.CreateUserAsync(request);
 
-
-
         return CreateSuccessResult(result);
     }
 
@@ -60,13 +60,16 @@ public class IdentityController : ApiControllerBase
         return CreateSuccessResult(result);
     }
 
-    [Authorize]
+    [Authorize(
+       AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme
+   )]
     [HttpGet("check")]
     [ProducesResponseType(typeof(ActionResponse<bool>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(FailActionResponse), (int)HttpStatusCode.BadRequest)]
     public async Task<IActionResult> CheckAsync(
     CancellationToken cancellationToken = default)
     {
+        var user = User;
         var stopwatch = Stopwatch.StartNew();
         var result = true;
         stopwatch.Stop();

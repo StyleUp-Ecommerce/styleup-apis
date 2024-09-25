@@ -33,8 +33,8 @@ namespace Infrastructure.Extensions
             })
             .AddJwtBearer(options =>
             {
-                options.RequireHttpsMetadata = false;
-                options.Authority = settings.IdentityServerConfig.Authority;
+                //options.RequireHttpsMetadata = false;
+                //options.Authority = settings.IdentityServerConfig.Authority;
 
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
@@ -43,7 +43,7 @@ namespace Infrastructure.Extensions
                     ValidateIssuer = false,
                     ValidateAudience = false,
                     ValidAudience = settings.JwtConfig.Audience,
-                    ValidateIssuerSigningKey = true,
+                    ValidateIssuerSigningKey = true ,
                 };
             })
             .AddGoogle(options =>
@@ -58,31 +58,31 @@ namespace Infrastructure.Extensions
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy(Policy.ReadAccess, policy =>
+                options.AddPolicy(ApiPolicy.ReadAccess, policy =>
                 {
                     policy.RequireAuthenticatedUser();
                     policy.RequireClaim(JwtClaimTypes.Scope, ApiScope.Read);
                 });
 
-                options.AddPolicy(Policy.WriteAccess, policy =>
+                options.AddPolicy(ApiPolicy.WriteAccess, policy =>
                 {
                     policy.RequireAuthenticatedUser();
                     policy.RequireClaim(JwtClaimTypes.Scope, ApiScope.Write);
                 });
 
-                options.AddPolicy(Policy.UpdateAccess, policy =>
+                options.AddPolicy(ApiPolicy.UpdateAccess, policy =>
                 {
                     policy.RequireAuthenticatedUser();
                     policy.RequireClaim(JwtClaimTypes.Scope, ApiScope.Update);
                 });
 
-                options.AddPolicy(Policy.DeleteAccess, policy =>
+                options.AddPolicy(ApiPolicy.DeleteAccess, policy =>
                 {
                     policy.RequireAuthenticatedUser();
                     policy.RequireClaim(JwtClaimTypes.Scope, ApiScope.Delete);
                 });
 
-                options.AddPolicy(Policy.UpdateProfilePasswordAccess, policy =>
+                options.AddPolicy(ApiPolicy.UpdateProfilePasswordAccess, policy =>
                 {
                     policy.RequireAuthenticatedUser();
                     policy.RequireClaim(JwtClaimTypes.Scope, ApiScope.Update);

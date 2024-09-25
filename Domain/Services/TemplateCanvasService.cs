@@ -10,6 +10,7 @@ using Core.ViewModels.Requests.TemplateCanvas;
 using Core.ViewModels.Responses.CustomCanvas;
 using Core.ViewModels.Responses.TemplateCanvas;
 using Domain.Extensions.Linq;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace Domain.Services

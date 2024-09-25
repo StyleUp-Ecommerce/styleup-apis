@@ -53,5 +53,25 @@ namespace Domain.Services
 
             return Mapper.Map<VoucherResponse>(voucher);
         }
+
+        public Task<VoucherResponse> GetVoucherByCode(string code)
+        {
+            var voucher =  Repository.Where(p => p.Code.Trim() == code.Trim())
+                            .Select(p => new VoucherResponse
+                            {
+                                Id = p.Id,
+                                Code = p.Code,
+                                DiscountType  = p.DiscountType,
+                                DiscountValue = p.DiscountValue,
+                                ExpirationDate = p.ExpirationDate
+                            })
+                            .FirstOrDefaultAsync();
+
+            if (voucher is null)
+                throw new DomainException("Voucher not valid", "NOT_EXITS", null, 400, null);
+
+            return voucher;
+        }
+
     }
 }

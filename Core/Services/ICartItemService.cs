@@ -7,5 +7,6 @@ namespace Core.Services
 {
     public interface ICartItemService : IServiceBase<CartItem, CartItemRequest, CartItemResponse, GetAllCartItemRequest>
     {
+        Task<bool> CleanCartItemByIds(List<Guid> ids);
     }
 }

@@ -13,5 +13,20 @@ namespace Domain.Services
         public CartItemService(ICoreProvider coreProvider, IUnitOfWork unitOfWork) : base(coreProvider, unitOfWork)
         {
         }
+
+        public async Task<bool> CleanCartItemByIds(List<Guid> ids)
+        {
+            if (ids is null)
+            {
+                return false;
+            }
+
+            var tasks = ids.Select(id => this.Repository.DeleteAsync(id));
+
+            var results = await Task.WhenAll(tasks);
+
+            return results.All(result => result);
+        }
+
     }
 }

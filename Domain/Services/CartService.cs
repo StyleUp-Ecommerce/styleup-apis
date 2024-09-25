@@ -1,6 +1,7 @@
 ﻿using CleanBase.Core.Data.UnitOfWorks;
 using CleanBase.Core.Domain.Domain.Services.GenericBase;
 using CleanBase.Core.Domain.Exceptions;
+using CleanBase.Core.Extensions;
 using CleanBase.Core.Services.Core.Base;
 using Core.Entities;
 using Core.Services;
@@ -9,6 +10,7 @@ using Core.ViewModels.Responses.Cart;
 using Core.ViewModels.Responses.CartItem;
 using Core.ViewModels.Responses.CustomCanvas;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Domain.Services
 {
@@ -22,6 +24,7 @@ namespace Domain.Services
 
         public async Task<CartResponse> AddToCart(AddToCartRequest request)
         {
+            request.NormalizeData();
             var authorId = new Guid("d7749509-d3c4-4c4f-8870-88997e75fcce");
 
             var validProduct = await _customCanvasService.GetByIdAsync(request.CustomCanvasId)
@@ -37,14 +40,16 @@ namespace Domain.Services
                             CartItems = new List<CartItem>()
                         };
 
-            var existingItem = cart.CartItems.FirstOrDefault(ci => ci.CustomCanvasId == request.CustomCanvasId);
+            var existingItem = cart.CartItems.FirstOrDefault(ci => 
+                                    ci.CustomCanvasId == request.CustomCanvasId 
+                                    && string.Equals(request.Size, ci.Size, StringComparison.OrdinalIgnoreCase));
 
-            if (existingItem != null)
+            if (existingItem is not null)
             {
-                if(existingItem.Quantity + request.Quantity <= 0)
-                       cart.CartItems.Remove(existingItem);
+                existingItem.Quantity += request.Quantity;
 
-                else existingItem.Quantity += request.Quantity;
+                if (existingItem.Quantity <= 0)
+                    cart.CartItems.Remove(existingItem);
             }
             else
             {
@@ -52,14 +57,17 @@ namespace Domain.Services
                 {
                     CartId = cart.Id,
                     Quantity = request.Quantity,
-                    Size = request.Size,
+                    Size = request.Size.ToUpper(),
                     CustomCanvasId = request.CustomCanvasId
                 });
             }
 
             var canvasIds = cart.CartItems.Select(ci => ci.CustomCanvasId).ToList();
-            var productDict = (await _customCanvasService.GetListByIds(canvasIds))
-                                .ToDictionary(p => p.Id, p => p);
+
+            var productDict = (await _customCanvasService.GetDictionaryByIds(
+                canvasIds, 
+                new Expression<Func<CustomCanvas, object>>[] { canvas => canvas.Content }));
+
 
             if (cart.Id == Guid.Empty)
                 Repository.Add(cart);
@@ -75,7 +83,7 @@ namespace Domain.Services
                     return new CartItemResponse
                     {
                         Quantity = ci.Quantity,
-                        Size = ci.Size,
+                        Size = ci.Size.ToUpper(),
                         CustomCanvas = new GetCanvasInfoCartResponse
                         {
                             Id= product.Id,
@@ -105,8 +113,12 @@ namespace Domain.Services
                 };
 
             var canvasIds = cart.CartItems.Select(ci => ci.CustomCanvasId).ToList();
-            var productDict = (await _customCanvasService.GetListByIds(canvasIds))
-                                .ToDictionary(p => p.Id, p => p);
+
+            Expression<Func<CustomCanvas, object>>[] excludedProperties = new Expression<Func<CustomCanvas, object>>[]
+                {
+                        canvas => canvas.Content
+                };
+            var productDict = (await _customCanvasService.GetDictionaryByIds(canvasIds, excludedProperties));
 
             return new CartResponse
             {
