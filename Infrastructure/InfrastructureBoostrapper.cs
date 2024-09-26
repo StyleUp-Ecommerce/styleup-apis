@@ -5,6 +5,7 @@ using Infrastructure.Commons;
 using Infrastructure.Email;
 using Infrastructure.Identity.Services;
 using Infrastructure.Jobs;
+using Infrastructure.Repositories.DI;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -19,7 +20,6 @@ namespace Infrastructure
             JobBootStrapper.UseHangfireBackgroundJob(services);
 
             services.Configure<AppConfig>(configuration.GetSection(nameof(AppConfig)));
-
             services.AddScoped<IIdentityService, IdentityService>();
             services.AddScoped<IEmailService, EmailService>();
 

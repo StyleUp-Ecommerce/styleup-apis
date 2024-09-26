@@ -58,5 +58,15 @@ namespace APis.Controllers
         {
             return await DeActiveInternal(id);
         }
+
+        [HttpPost("ordering")]
+        [AllowAnonymous]
+        [ProducesResponseType(typeof(ActionResponse<OrderResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(FailActionResponse), (int)HttpStatusCode.BadRequest)]
+        public virtual async Task<IActionResult> Ordering(OrderRequest request)
+        {
+            var result = await Service.Ordering(request);
+            return CreateSuccessResult(result);
+        }
     }
 }

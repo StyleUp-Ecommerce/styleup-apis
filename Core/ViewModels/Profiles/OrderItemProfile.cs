@@ -17,6 +17,10 @@ namespace Core.ViewModels.Profiles
             CreateMap<OrderItemRequest, OrderItemResponse>();
             CreateMap<OrderItemRequest, OrderItem>();
             CreateMap<OrderItem, OrderItemResponse>();
+            CreateMap<OrderItemRequest, OrderItemDetailResponse>();
+            CreateMap<OrderItemDetailResponse, OrderItem>()
+                .ReverseMap();
+
 
         }
     }

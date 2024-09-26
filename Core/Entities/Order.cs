@@ -17,6 +17,9 @@ namespace Core.Entities
 
         [Required]
         public string OrderCode { get; set; }
+
+        public string? VoucherCode { get; set; }
+
         [Required]
         [MaxLength(100)]
         public string RecipientName { get; set; }

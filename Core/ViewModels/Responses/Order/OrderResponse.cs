@@ -10,8 +10,11 @@ namespace Core.ViewModels.Responses.Order
         public List<OrderItemDetailResponse> Items { get; set; }
         public decimal TotalPrice { get; set; }
         public string DiscountType { get; set; }
-
         public decimal DiscountValue { get; set; }
+        public string Address { get; set; }
+        public string RecipientPhone { get; set; }
+        public string RecipientEmail { get; set; }
+        public string RecipientName { get; set; }
 
     }
 }

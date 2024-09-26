@@ -13,7 +13,9 @@ namespace Core.ViewModels.Profiles
             CreateMap<OrderRequest, Order>();
             CreateMap<Order, GetOrderResponse>()
                 .ForMember(dest => dest.OrderItems, opt => opt.MapFrom(src => src.OrderItems));
-            CreateMap<Order, OrderResponse>();
+            CreateMap<Order, OrderResponse>()
+                .ForMember(dest => dest.OrderStatus, opt => opt.MapFrom(src => src.StatusString));
+            CreateMap<OrderRequest, OrderResponse>();
             CreateMap<ListResult<Order>, ListResult<OrderResponse>>();
 
         }

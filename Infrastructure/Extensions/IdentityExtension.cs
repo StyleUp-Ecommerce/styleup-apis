@@ -5,6 +5,7 @@ using Duende.IdentityServer;
 using IdentityModel;
 using Infrastructure.Commons;
 using Infrastructure.Context;
+using Infrastructure.Repositories.DI;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -113,6 +114,7 @@ namespace Infrastructure.Extensions
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
 
+            services.RegisterRepositories();
             services.Configure<DataProtectionTokenProviderOptions>(options =>
             {
                 options.TokenLifespan = TimeSpan.FromDays(2);
