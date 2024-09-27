@@ -1,4 +1,6 @@
-﻿using Core.Entities;
+﻿using CleanBase.Core.Domain;
+using CleanBase.Core.Services.Core.Base;
+using Core.Entities;
 using Core.Identity.Constants.Authorization;
 using Core.IdentityServer.Constants.Authorization;
 using Duende.IdentityServer;
@@ -13,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 using System.Text;
 
 namespace Infrastructure.Extensions
@@ -46,6 +49,26 @@ namespace Infrastructure.Extensions
                     ValidAudience = settings.JwtConfig.Audience,
                     ValidateIssuerSigningKey = true ,
                 };
+                options.Events = new JwtBearerEvents
+                {
+                    OnTokenValidated = async context =>
+                    {
+                        var userName = context.Principal?.Identity?.Name;
+                        var logger = context.HttpContext.RequestServices.GetService<ISmartLogger>();
+
+                        logger.UserName = string.IsNullOrEmpty(userName)
+                            ? "anonymous"
+                            : userName;
+
+                        IIdentityProvider provider = context.HttpContext.RequestServices.GetService<IIdentityProvider>();
+
+
+                        logger.Error("data", context.Principal);
+
+                        await provider.UpdateIdentity(context.Principal, context.SecurityToken.ToString());
+                    }
+                };
+
             })
             .AddGoogle(options =>
             {
@@ -55,7 +78,7 @@ namespace Infrastructure.Extensions
                 options.ClientSecret = google.ExternalClientSecret;
             });
 
-            JwtExtensions.Configure(configuration);
+            //JwtExtensions.Configure(configuration);
 
             services.AddAuthorization(options =>
             {

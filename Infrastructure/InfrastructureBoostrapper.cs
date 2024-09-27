@@ -21,6 +21,7 @@ namespace Infrastructure
 
             services.Configure<AppConfig>(configuration.GetSection(nameof(AppConfig)));
             services.AddScoped<IIdentityService, IdentityService>();
+            services.AddScoped<JwtService>();
             services.AddScoped<IEmailService, EmailService>();
 
             services.RegisterJobConsumers();

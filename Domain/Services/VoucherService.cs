@@ -27,7 +27,7 @@ namespace Domain.Services
         {
             var authorId = new Guid("d7749509-d3c4-4c4f-8870-88997e75fcce");
 
-            var voucher = Repository.Where(p => p.Id == request.VoucherId)
+            var voucher = Repository.Where(p => p.Code == request.VoucherCode.Trim())
                             .Select(p => new Voucher
                             {
                                 UserVouchers = p.UserVouchers

@@ -22,18 +22,21 @@ namespace Infrastructure.Identity.Services
         private readonly UserManager<User> _userManager;
         private readonly IPasswordHasher<User> _passwordHasher;
         private readonly SignInManager<User> _signInManager;
+        private readonly JwtService _jwtService;
 
         public IdentityService(
             ILogger<IdentityService> logger,
             UserManager<User> userManager,
             IPasswordHasher<User> passwordHasher,
-            SignInManager<User> signInManager
+            SignInManager<User> signInManager,
+            JwtService jwtService
         )
         {
             _logger = logger;
             _userManager = userManager;
             _passwordHasher = passwordHasher;
             _signInManager = signInManager;
+            _jwtService = jwtService;
         }
 
         public async Task<User> FindUserAsync(FindUserRequest request)
@@ -299,9 +302,9 @@ namespace Infrastructure.Identity.Services
             {
                 var claims = await _userManager.GetClaimsAsync(user);
 
-                var accessToken = user.GenerateJwtToken(claims);
+                var accessToken = _jwtService.GenerateJwtToken(user, claims);
 
-                var refreshToken = JwtExtensions.GenerateRefreshToken();
+                var refreshToken = _jwtService.GenerateRefreshToken();
 
 
                 return (accessToken, refreshToken);

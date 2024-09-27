@@ -89,9 +89,9 @@ var app = builder.Build();
 // Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwaggerExtension();
+    
 }
-
+app.UseSwaggerExtension();
 // Init middleware
 app.UseMiddleware<HttpInjectMiddleware>(Array.Empty<object>());
 app.UseMiddleware<RequestLoggingMiddleware>(Array.Empty<object>());

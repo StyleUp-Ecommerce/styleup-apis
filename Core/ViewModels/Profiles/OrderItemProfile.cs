@@ -1,4 +1,5 @@
-﻿using CleanBase.Core.ViewModels.Profiles;
+﻿using CleanBase.Core.Domain.Generic;
+using CleanBase.Core.ViewModels.Profiles;
 using Core.Entities;
 using Core.ViewModels.Requests.OrderItem;
 using Core.ViewModels.Responses.OrderItem;
@@ -18,6 +19,7 @@ namespace Core.ViewModels.Profiles
             CreateMap<OrderItemRequest, OrderItem>();
             CreateMap<OrderItem, OrderItemResponse>();
             CreateMap<OrderItemRequest, OrderItemDetailResponse>();
+            CreateMap<ListResult<OrderItem>, ListResult<OrderItemRequest>>();
             CreateMap<OrderItemDetailResponse, OrderItem>()
                 .ReverseMap();
 

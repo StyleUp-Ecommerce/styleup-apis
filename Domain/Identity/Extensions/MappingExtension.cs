@@ -81,11 +81,13 @@ namespace Domain.Identity.Extensions
         ) =>
             new List<Claim>
             {
-            new Claim(JwtClaimTypes.Email, user.Email),
-            new Claim(JwtClaimTypes.GivenName, user.FirstName),
-            new Claim(JwtClaimTypes.FamilyName, user.LastName),
-            new Claim(JwtClaimTypes.IdentityProvider, provider),
-            new Claim(JwtClaimTypes.Name, user.Email),
+                new Claim(JwtClaimTypes.Email, user.Email),
+                new Claim("PREFERRED_USERNAME", user.Email.Split('@')[0]),
+                new Claim("USER_ID", user.Id.ToString()),
+                new Claim(JwtClaimTypes.GivenName, user.FirstName),
+                new Claim(JwtClaimTypes.FamilyName, user.LastName),
+                new Claim(JwtClaimTypes.IdentityProvider, provider),
+                new Claim(JwtClaimTypes.Name, user.Email),
             };
     }
 

@@ -29,6 +29,7 @@ namespace Domain.Services
 
         public async Task<OrderResponse> Ordering(OrderRequest request)
         {
+            var data = IdentityProvider.Identity.UserName;
             using (var tran = this.UnitOfWork.BeginTransaction())
             {
                 try
@@ -63,7 +64,6 @@ namespace Domain.Services
                     });
 
                    
-
                     var responseItems = request.Items.Select(item =>
                     {
                         var canvasItem = canvasDic[item.CustomCanvasId];

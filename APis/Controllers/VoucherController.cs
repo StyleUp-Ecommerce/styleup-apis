@@ -62,5 +62,16 @@ namespace APis.Controllers
         {
             return await DeActiveInternal(id);
         }
+
+        [HttpPost("check")]
+        [AllowAnonymous]
+
+        [ProducesResponseType(typeof(ActionResponse<VoucherResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(FailActionResponse), (int)HttpStatusCode.BadRequest)]
+        public virtual async Task<IActionResult> CheckValidVoucher(CheckValidVoucherRequest request)
+        {
+            var result = await Service.CheckValidVoucherAsync(request);
+            return CreateSuccessResult(result);
+        }
     }
 }

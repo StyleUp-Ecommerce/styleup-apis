@@ -8,6 +8,6 @@ namespace Core.ViewModels.Requests.Voucher
 {
     public class CheckValidVoucherRequest
     {
-        public Guid VoucherId { get; set; }
+        public string VoucherCode { get; set; }
     }
 }

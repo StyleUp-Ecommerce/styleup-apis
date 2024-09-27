@@ -13,3 +13,8 @@
 /Infrastructure/obj
 /obj
 *.json
+/APis/bin/Release/net8.0
+/APis/Properties/PublishProfiles
+/Domain/bin/Release/net8.0
+/Core/bin/Release/net8.0
+/Infrastructure/bin/Release/net8.0
