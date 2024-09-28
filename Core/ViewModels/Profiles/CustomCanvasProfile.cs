@@ -11,9 +11,14 @@ namespace Core.ViewModels.Profiles
     {
         protected override void DefaultMapping()
         {
-            CreateMap<CustomCanvasRequest, CustomCanvas>();
-            CreateMap<CustomCanvas, GetCustomCanvasResponse>();
-            CreateMap<CustomCanvas, CustomCanvasResponse>();
+            CreateMap<CustomCanvasRequest, CustomCanvas>()
+                .ForMember(dest => dest.Color, opt => opt.MapFrom(src => src.Color));
+            CreateMap<CustomCanvas, GetCustomCanvasResponse>()
+                 .ForMember(dest => dest.Color, opt => opt.MapFrom(src => src.Color))
+                .ForMember(dest => dest.Images, opt => opt.MapFrom(src => StringSpliter.SplitImageString(src.Images)));
+            CreateMap<CustomCanvas, CustomCanvasResponse>()
+                 .ForMember(dest => dest.Color, opt => opt.MapFrom(src => src.Color))
+                .ForMember(dest => dest.Images, opt => opt.MapFrom(src => StringSpliter.SplitImageString(src.Images)));
             CreateMap<ListResult<CustomCanvas>, ListResult<CustomCanvasResponse>>();
             CreateMap<CustomCanvas, CustomCanvasProductResponse>()
                 .ForMember(dest => dest.Color, opt => opt.MapFrom(src => src.ColorString))

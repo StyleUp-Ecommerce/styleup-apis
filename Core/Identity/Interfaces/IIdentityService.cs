@@ -10,10 +10,10 @@ namespace Core.Identity.Interfaces
     {
         Task<User> FindUserAsync(FindUserRequest request);
         Task<object> CreateUserAsync(CreateUserRequest request);
-        Task<string> GenerateEmailVerificationTokenAsync(string email);
+        Task<bool> GenerateEmailVerificationTokenAsync(string email);
         Task<LoginResponse> LoginAsync(LoginRequest request);
         Task<object> VerifyEmailAsync(VerifyEmailRequest request);
-        Task<string> GenerateResetPasswordTokenAsync(string email);
+        Task<bool> GenerateResetPasswordTokenAsync(string email);
         Task<object> ResetPasswordAsync(ResetPasswordRequest request);
         Task<object> ChangePasswordAsync(ChangePasswordRequest request);
         Task<object> DeleteUserAsync(FindUserRequest request);

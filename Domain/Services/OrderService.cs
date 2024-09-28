@@ -29,7 +29,6 @@ namespace Domain.Services
 
         public async Task<OrderResponse> Ordering(OrderRequest request)
         {
-            var data = IdentityProvider.Identity.UserName;
             using (var tran = this.UnitOfWork.BeginTransaction())
             {
                 try
@@ -58,7 +57,7 @@ namespace Domain.Services
                         {
                             dest.StatusString = StatusEnum.Pending.ToString();
                             dest.VoucherCode = voucher?.Code ?? null;
-                            dest.OrderCode = "ABCD";
+                            dest.OrderCode = "222aa";
                             dest.Id = Guid.NewGuid();
                         });
                     });

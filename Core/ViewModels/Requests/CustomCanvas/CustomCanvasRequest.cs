@@ -11,7 +11,9 @@ namespace Core.ViewModels.Requests.CustomCanvas
 
         public decimal Price { get; set; }
 
-        public string ColorString { get; set; }
+        public string Color { get; set; }
+
+        public string Sizes {  get; set; }
 
         public Guid AuthorId { get; set; }
         public Guid TemplateId { get; set; }

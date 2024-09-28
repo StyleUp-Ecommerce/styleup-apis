@@ -25,7 +25,7 @@ namespace Domain.Services
         public async Task<CartResponse> AddToCart(AddToCartRequest request)
         {
             request.NormalizeData();
-            var authorId = new Guid("d7749509-d3c4-4c4f-8870-88997e75fcce");
+            var authorId = IdentityProvider.Identity.UserId;
 
             var validProduct = await _customCanvasService.GetByIdAsync(request.CustomCanvasId)
                                 ?? throw new DomainException("Product does not exist", null, null, 400, null);
@@ -100,7 +100,7 @@ namespace Domain.Services
 
         public async Task<CartResponse> GetCartById(Guid id)
         {
-            var authorId = new Guid("d7749509-d3c4-4c4f-8870-88997e75fcce");
+            var authorId = IdentityProvider.Identity.UserId;
 
             var cart = await Repository
                 .Where(p => p.AuthorId == authorId)

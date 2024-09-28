@@ -25,7 +25,7 @@ namespace Domain.Services
 
         public async Task<VoucherResponse> CheckValidVoucherAsync(CheckValidVoucherRequest request)
         {
-            var authorId = new Guid("d7749509-d3c4-4c4f-8870-88997e75fcce");
+            var authorId = IdentityProvider.Identity.UserId;
 
             var voucher = Repository.Where(p => p.Code == request.VoucherCode.Trim())
                             .Select(p => new Voucher

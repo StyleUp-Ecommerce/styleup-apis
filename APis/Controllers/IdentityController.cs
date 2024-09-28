@@ -32,9 +32,7 @@ public class IdentityController : ApiControllerBase
         _identityService = identityService;
     }
 
-    [AllowAnonymous(
-            
-    )]
+    [AllowAnonymous]
     [HttpPost("register")]
     [ProducesResponseType(typeof(ActionResponse<UserResponse>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(FailActionResponse), (int)HttpStatusCode.BadRequest)]
@@ -61,8 +59,8 @@ public class IdentityController : ApiControllerBase
     }
 
     [Authorize(
-       AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme
-   )]
+        AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme
+    )]
     [HttpGet("check")]
     [ProducesResponseType(typeof(ActionResponse<bool>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(FailActionResponse), (int)HttpStatusCode.BadRequest)]
@@ -75,5 +73,31 @@ public class IdentityController : ApiControllerBase
         stopwatch.Stop();
         this.Logger.Error(($"CheckAsync executed in {stopwatch.ElapsedMilliseconds} ms"));
         return Ok(result);
+    }
+
+    [AllowAnonymous]
+    [HttpPost("reset-password")]
+    [ProducesResponseType(typeof(ActionResponse<bool>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(FailActionResponse), (int)HttpStatusCode.BadRequest)]
+    public async Task<IActionResult> ResetPassword(
+        EmailRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        var result = await _identityService.GenerateResetPasswordTokenAsync(request.Email);
+
+        return CreateSuccessResult(result);
+    }
+
+    [AllowAnonymous]
+    [HttpPost("verify-mail")]
+    [ProducesResponseType(typeof(ActionResponse<bool>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(FailActionResponse), (int)HttpStatusCode.BadRequest)]
+    public async Task<IActionResult> VerifyMail(
+        EmailRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        var result = await _identityService.GenerateEmailVerificationTokenAsync(request.Email);
+
+        return CreateSuccessResult(result);
     }
 }
