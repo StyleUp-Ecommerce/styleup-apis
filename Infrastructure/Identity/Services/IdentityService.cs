@@ -1,5 +1,7 @@
 ﻿using CleanBase.Core.Domain.Exceptions;
 using Core.Entities;
+using Core.Identity.Email.Enums;
+using Core.Identity.Email.Interfaces;
 using Core.Identity.Interfaces;
 using Core.IdentityServer.Constants.Authorization;
 using Core.ViewModels.Requests.Identity;
@@ -23,13 +25,15 @@ namespace Infrastructure.Identity.Services
         private readonly IPasswordHasher<User> _passwordHasher;
         private readonly SignInManager<User> _signInManager;
         private readonly JwtService _jwtService;
+        private readonly IEmailService _emailService;
 
         public IdentityService(
             ILogger<IdentityService> logger,
             UserManager<User> userManager,
             IPasswordHasher<User> passwordHasher,
             SignInManager<User> signInManager,
-            JwtService jwtService
+            JwtService jwtService,
+            IEmailService emailService
         )
         {
             _logger = logger;
@@ -37,6 +41,7 @@ namespace Infrastructure.Identity.Services
             _passwordHasher = passwordHasher;
             _signInManager = signInManager;
             _jwtService = jwtService;
+            _emailService = emailService;
         }
 
         public async Task<User> FindUserAsync(FindUserRequest request)
@@ -94,7 +99,7 @@ namespace Infrastructure.Identity.Services
         }
 
 
-        public async Task<string> GenerateEmailVerificationTokenAsync(string email)
+        public async Task<bool> GenerateEmailVerificationTokenAsync(string email)
         {
             try
             {
@@ -108,9 +113,13 @@ namespace Infrastructure.Identity.Services
                 .GenerateEmailConfirmationTokenAsync(searchResult)
                 .ConfigureAwait(false);
 
-                var result = Convert.ToBase64String(Encoding.UTF8.GetBytes(token));
+                var stringToken = Convert.ToBase64String(Encoding.UTF8.GetBytes(token));
 
-                return result;
+                var parameters = _emailService.GenerateEmailConfirmationParameters(searchResult, stringToken);
+
+                await _emailService.SendAsync(EmailType.Verification, email, parameters);
+
+                return true;
             }
             catch (Exception ex)
             {
@@ -144,7 +153,8 @@ namespace Infrastructure.Identity.Services
                 if (!claimsResult.Succeeded)
                     throw new DomainException("Cannot comfirm email. ", "ERROR", null, 500, null);
 
-                return true;
+                var tokens = GenerateTokensAsync(searchResult);
+                return tokens;
             }
             catch (Exception ex)
             {
@@ -153,7 +163,7 @@ namespace Infrastructure.Identity.Services
             }
         }
 
-        public async Task<string> GenerateResetPasswordTokenAsync(string email)
+        public async Task<bool> GenerateResetPasswordTokenAsync(string email)
         {
             try
             {
@@ -165,10 +175,14 @@ namespace Infrastructure.Identity.Services
                 var token = await _userManager
                     .GeneratePasswordResetTokenAsync(searchResult)
                     .ConfigureAwait(false);
+                
+                var stringToken = Convert.ToBase64String(Encoding.UTF8.GetBytes(token));
 
-                var result = Convert.ToBase64String(Encoding.UTF8.GetBytes(token));
+                var parameters = _emailService.GenerateResetPasswordParameters(searchResult, stringToken);
 
-                return result;
+                await _emailService.SendAsync(EmailType.ResetPassword, email,parameters);
+                
+                return true;
             }
             catch (Exception ex)
             {

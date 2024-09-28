@@ -1,7 +1,10 @@
-﻿using Core.Entities;
+﻿using Azure;
+using Azure.Communication.Email;
+using Core.Entities;
 using Core.Identity.Email.Enums;
 using Core.Identity.Email.Interfaces;
 using Core.Identity.Email.Models;
+using Domain.Extensions.Email;
 using Infrastructure.Commons;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -48,22 +51,22 @@ namespace Infrastructure.Email
         public async Task SendAsync(EmailType type, string email, Dictionary<string, string> paramters)
         {
             _logger.LogError("hi");
-            //try
-            //{
-            //    ClassifiedEmail classifiedEmail = Classify(type, paramters);
+            try
+            {
+                ClassifiedEmail classifiedEmail = Classify(type, paramters);
 
-            //    EmailClient client = new EmailClient(_options.EmailServiceConfig.ConnectionString);
+                EmailClient client = new EmailClient(_options.EmailServiceConfig.ConnectionString);
 
-            //    var content = classifiedEmail.SelectEmailContent();
-            //    var message = new EmailMessage(_options.EmailServiceConfig.Sender, email, content);
+                var content = classifiedEmail.SelectEmailContent();
+                var message = new EmailMessage(_options.EmailServiceConfig.Sender, email, content);
 
-            //    await client.SendAsync(Azure.WaitUntil.Completed, message).ConfigureAwait(false);
-            //}
-            //catch (Exception ex)
-            //{
-            //   
-            //    throw;
-            //}
+                await client.SendAsync(WaitUntil.Completed, message).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
         }
 
         public Dictionary<string, string> GenerateEmailConfirmationParameters(User user, string token)
