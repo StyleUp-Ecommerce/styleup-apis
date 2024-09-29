@@ -7,6 +7,7 @@ namespace Core.ViewModels.Requests.CustomCanvas
         public string? Content { get; set; }
         public List<string> Images { get; set; }
         public string? LensVRUrl { get; set; }
+        public string CanvasCode { get; set; }
         public bool IsPublic { get; set; } = false;
 
         public decimal Price { get; set; }

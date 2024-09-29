@@ -29,6 +29,7 @@ namespace Domain
                 {
                         new EmailVerificationTemplate(),
                         new ResetPasswordTemplate(),
+                        new OrderedTemplate(),
                 };
 
             });
