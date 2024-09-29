@@ -16,6 +16,9 @@ namespace Core.Entities
         public string RecipientPhone { get; set; }
 
         [Required]
+        public string RecipientMail { get; set; }
+
+        [Required]
         public string OrderCode { get; set; }
 
         public string? VoucherCode { get; set; }
