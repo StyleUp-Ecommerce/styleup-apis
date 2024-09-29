@@ -1,6 +1,7 @@
 ﻿using Core.Entities;
 using Core.Identity.Email.Enums;
 using Core.Identity.Email.Models;
+using Core.ViewModels.Responses.Order;
 
 namespace Core.Identity.Email.Interfaces
 {
@@ -10,5 +11,6 @@ namespace Core.Identity.Email.Interfaces
         ClassifiedEmail Classify(EmailType type, Dictionary<string, string> paramters);
         Dictionary<string, string> GenerateEmailConfirmationParameters(User member, string token);
         Dictionary<string, string> GenerateResetPasswordParameters(User member, string token);
+        Dictionary<string, string> GenerateOrderedParameters(string name, OrderResponse order);
     }
 }

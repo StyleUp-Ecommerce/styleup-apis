@@ -3,6 +3,7 @@
     public enum EmailType
     {
         Verification,
-        ResetPassword
+        ResetPassword,
+        Ordered
     }
 }

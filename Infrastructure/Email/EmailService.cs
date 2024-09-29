@@ -4,6 +4,7 @@ using Core.Entities;
 using Core.Identity.Email.Enums;
 using Core.Identity.Email.Interfaces;
 using Core.Identity.Email.Models;
+using Core.ViewModels.Responses.Order;
 using Domain.Extensions.Email;
 using Infrastructure.Commons;
 using Microsoft.Extensions.Logging;
@@ -50,7 +51,6 @@ namespace Infrastructure.Email
 
         public async Task SendAsync(EmailType type, string email, Dictionary<string, string> paramters)
         {
-            _logger.LogError("hi");
             try
             {
                 ClassifiedEmail classifiedEmail = Classify(type, paramters);
@@ -105,6 +105,29 @@ namespace Infrastructure.Email
                 throw;
             }
         }
-    }
 
+        public Dictionary<string, string> GenerateOrderedParameters(string fullName, OrderResponse order)
+        {
+            try
+            {
+                return new Dictionary<string, string>()
+                {
+                    { "fullName", fullName },
+                    { "orderCode", order?.OrderCode },
+                    { "totalPrice", order?.TotalPrice.ToString() + " VND" },
+                    { "recipientName", order?.RecipientName },
+                    { "orderStatus", order?.OrderStatus },
+                    { "recipientEmail", order?.RecipientEmail },
+                    { "recipientPhone", order?.RecipientPhone },
+                    { "address", order?.Address }
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message, nameof(GenerateOrderedParameters));
+                throw;
+            }
+        }
+
+    }
 }
