@@ -43,7 +43,6 @@ namespace APis.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-
         [ProducesResponseType(typeof(ActionResponse<VoucherResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(FailActionResponse), (int)HttpStatusCode.BadRequest)]
         public virtual async Task<IActionResult> CreateOrUpdate([FromBody] VoucherRequest entity)
@@ -55,7 +54,6 @@ namespace APis.Controllers
 
         [HttpPost("delete/{id}")]
         [AllowAnonymous]
-
         [ProducesResponseType(typeof(ActionResponse<bool>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(FailActionResponse), (int)HttpStatusCode.BadRequest)]
         public virtual async Task<IActionResult> DeActive(Guid id)
@@ -65,7 +63,6 @@ namespace APis.Controllers
 
         [HttpPost("check")]
         [AllowAnonymous]
-
         [ProducesResponseType(typeof(ActionResponse<VoucherResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(FailActionResponse), (int)HttpStatusCode.BadRequest)]
         public virtual async Task<IActionResult> CheckValidVoucher(CheckValidVoucherRequest request)

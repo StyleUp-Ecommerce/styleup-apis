@@ -38,8 +38,8 @@ namespace APis.Controllers
         {
             var result = await Service.GetTemplateCanvasProductAsync(id);
             return CreateSuccessResult(result);
-
         }
+
         [HttpPost("get-basic")]
         [AllowAnonymous]
         [ProducesResponseType(typeof(ActionResponse<ListResult<TemplateCanvasResponse>>), (int)HttpStatusCode.OK)]
@@ -50,7 +50,6 @@ namespace APis.Controllers
             return CreateSuccessResult(result);
         }
 
-
         [HttpPost]
         [AllowAnonymous]
         [ProducesResponseType(typeof(ActionResponse<TemplateCanvasResponse>), (int)HttpStatusCode.OK)]
@@ -59,7 +58,6 @@ namespace APis.Controllers
         {
             return await CreateOrUpdateInternal(entity);
         }
-
 
         [HttpPost("delete/{id}")]
         [AllowAnonymous]

@@ -39,7 +39,6 @@ namespace APis.Controllers
             return await GetAllInternal(request);
         }
 
-
         [HttpPost]
         [AllowAnonymous]
         [ProducesResponseType(typeof(ActionResponse<ProviderResponse>), (int)HttpStatusCode.OK)]
@@ -48,7 +47,6 @@ namespace APis.Controllers
         {
             return await CreateOrUpdateInternal(entity);
         }
-
 
         [HttpPost("delete/{id}")]
         [AllowAnonymous]
