@@ -1,4 +1,4 @@
-﻿using CleanBase.Core.Data.UnitOfWorks;
+﻿    using CleanBase.Core.Data.UnitOfWorks;
 using CleanBase.Core.Domain.Domain.Services.GenericBase;
 using CleanBase.Core.Domain.Exceptions;
 using CleanBase.Core.Helpers;
@@ -113,8 +113,8 @@ namespace Domain.Services
                         });
                     });
 
-                    var param = _emailService.GenerateOrderedParameters(result.RecipientName, result);
-                    await _emailService.SendAsync(EmailType.Ordered, result.RecipientEmail, param);
+                    //var param = _emailService.GenerateOrderedParameters(result.RecipientName, result);
+                    //await _emailService.SendAsync(EmailType.Ordered, result.RecipientEmail, param);
 
                     tran.Commit();
                     UnitOfWork.SaveChanges();
