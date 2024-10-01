@@ -19,6 +19,7 @@ namespace Domain.Services
 {
     public class VoucherService : ServiceBase<Voucher, VoucherRequest, VoucherResponse, VoucherGetAllRequest>, IVoucherService
     {
+        
         public VoucherService(ICoreProvider coreProvider, IUnitOfWork unitOfWork) : base(coreProvider, unitOfWork)
         {
         }

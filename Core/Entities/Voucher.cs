@@ -1,4 +1,7 @@
-﻿using CleanBase.Core.Entities;
+﻿using CleanBase.Core.Data.Repositories;
+using CleanBase.Core.Data.Transactions;
+using CleanBase.Core.Data.UnitOfWorks;
+using CleanBase.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -6,6 +9,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace Core.Entities
 {
@@ -23,5 +27,6 @@ namespace Core.Entities
         public DateTime ExpirationDate {  get; set; }
 
         public virtual ICollection<UserVoucher>? UserVouchers { get; set;}
+
     }
 }
