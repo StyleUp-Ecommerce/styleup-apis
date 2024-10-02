@@ -1,4 +1,3 @@
-
 using Xunit;
 using Moq;
 using Domain.Services;
@@ -11,35 +10,62 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using CleanBase.Core.Services.Core.Base;
-using Infrastructure.Repositories;
-using Core.Data.Repositories;
 using System.Linq.Expressions;
 using Core.Services;
+using Microsoft.Extensions.DependencyInjection;
+using Core.Data.Repositories;
+using CleanBase.Core.Services.Core.Base;
+using Infrastructure.Repositories;
+using CleanBase.Core.Services.Core;
+using CleanBase.Core.Infrastructure.Policies;
+using CleanBase.Core.Data.Policies.Base;
+using CleanBase.Core.Services.Storage;
+using Infrastructure.UnitOfWorks;
+using Serilog;
+using Infrastructure.Context;
+using Microsoft.EntityFrameworkCore;
+
 namespace TestProject1
 {
-
     public class VoucherServiceTests
     {
-        private readonly Mock<IVoucherRepository> _voucherRepositoryMock;
-        private readonly Mock<ICoreProvider> _coreProviderMock;
-        private readonly Mock<IUnitOfWork> _unitOfWorkMock;
-        private readonly VoucherService _voucherService;
-       // public readonly IVoucherService _voucherService;
+
+        private readonly IVoucherService _voucherService;
 
         public VoucherServiceTests()
         {
-            _voucherRepositoryMock = new Mock<IVoucherRepository>();
-            _coreProviderMock = new Mock<ICoreProvider>();
-            _unitOfWorkMock = new Mock<IUnitOfWork>();
-          _voucherService = new VoucherService(_voucherRepositoryMock.Object, _coreProviderMock.Object, _unitOfWorkMock.Object);
+
+
+            var serviceCollection = new ServiceCollection();
+            serviceCollection.AddScoped<IVoucherRepository, VoucherRepository>();
+            serviceCollection.AddScoped<IVoucherService, VoucherService>();
+
+            Log.Logger = new LoggerConfiguration()
+           .CreateLogger();
+            serviceCollection.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+            serviceCollection.AddDbContext<AppDbContext>(options =>
+            {
+                options.UseNpgsql("bỏ connect vô đây test");
+            });
+
+            serviceCollection.AddSingleton<Serilog.ILogger>(Log.Logger);
+            serviceCollection.AddScoped<ISmartLogger, SmartLogger>();
+            serviceCollection.AddScoped<IIdentityProvider, IdentityProvider>();
+            serviceCollection.AddScoped<IPolicyFactory, PolicyFactory>();
+            serviceCollection.AddScoped<ICoreProvider, CoreProvider>();
+            serviceCollection.AddScoped(typeof(IStorageService<>), typeof(StorageService<>));
+            serviceCollection.AddScoped<IUnitOfWork, UnitOfWorkGeneral>();
+
+
+            var serviceProvider = serviceCollection.BuildServiceProvider();
+
+            _voucherService = serviceProvider.GetRequiredService<IVoucherService>();
         }
+
         [Fact]
         public async Task GetVoucherByCode_ShouldReturnVoucher_WhenVoucherExists()
         {
-            // Arrange
             var voucherId = new Guid("3fa85f64-5717-4562-b3fc-2c963f66afa6");
             var voucher = new Voucher
             {
@@ -49,24 +75,13 @@ namespace TestProject1
                 DiscountValue = 10,
                 ExpirationDate = DateTime.UtcNow.AddDays(30)
             };
-            _voucherRepositoryMock.Setup(repo => repo.Where(It.IsAny<Expression<Func<Voucher, bool>>>()))
-                .Returns(new List<Voucher> { voucher }.AsQueryable());
-            // Make sure this matches your method signature.
 
-            // Act
-            Voucher result = await _voucherService.GetByIdAsync("3fa85f64-5717-4562-b3fc-2c963f66afa6");
-       
-            // Assert
+
+
+            var result = await _voucherService.GetVoucherByCode("GIANGSINH2024");
+
             Assert.NotNull(result);
             Assert.Equal(voucher.Code, result.Code);
-
-
         }
-
     }
-
-
-
-
-
 }
