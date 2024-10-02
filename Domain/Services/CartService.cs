@@ -1,4 +1,5 @@
 ﻿using CleanBase.Core.Data.UnitOfWorks;
+using CleanBase.Core.Domain;
 using CleanBase.Core.Domain.Domain.Services.GenericBase;
 using CleanBase.Core.Domain.Exceptions;
 using CleanBase.Core.Extensions;
@@ -11,6 +12,7 @@ using Core.ViewModels.Responses.CartItem;
 using Core.ViewModels.Responses.CustomCanvas;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using System.Security.Claims;
 
 namespace Domain.Services
 {
@@ -21,7 +23,7 @@ namespace Domain.Services
         {
             _customCanvasService = customCanvasService;
         }
-
+        
         public async Task<CartResponse> AddToCart(AddToCartRequest request)
         {
             request.NormalizeData();
@@ -146,4 +148,6 @@ namespace Domain.Services
 
 
     }
+
+    
 }
