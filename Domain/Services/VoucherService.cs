@@ -24,6 +24,11 @@ namespace Domain.Services
         {
         }
 
+        public VoucherService(IVoucherRepository voucherRepository, ICoreProvider coreProvider, IUnitOfWork unitOfWork) : base(coreProvider, unitOfWork)
+        {
+          
+        }
+
         public async Task<VoucherResponse> CheckValidVoucherAsync(CheckValidVoucherRequest request)
         {
             var authorId = IdentityProvider.Identity.UserId;

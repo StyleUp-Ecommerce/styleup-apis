@@ -10,5 +10,6 @@ namespace Core.Data.Repositories
 {
     public partial interface IVoucherRepository : IRepository<Voucher>
     {
+      
     }
 }

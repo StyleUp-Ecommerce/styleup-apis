@@ -29,7 +29,7 @@ namespace Infrastructure.Extensions
 
                     options.Authentication.CookieLifetime = TimeSpan.FromDays(30);
                     options.Authentication.CookieSlidingExpiration = true;
-                    options.IssuerUri = settings.IdentityServerConfig.IssuerUri;
+               //     options.IssuerUri = settings.IdentityServerConfig.IssuerUri;
 
                     options.UserInteraction.LoginUrl = IdentityDefaults.LoginUrl;
                     options.UserInteraction.LogoutUrl = IdentityDefaults.LogoutUrl;

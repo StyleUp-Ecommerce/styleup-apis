@@ -2,6 +2,7 @@
 using CleanBase.Core.Data.Transactions;
 using CleanBase.Core.Data.UnitOfWorks;
 using CleanBase.Core.Entities;
+using Core.ViewModels.Responses.Voucher;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -28,5 +29,9 @@ namespace Core.Entities
 
         public virtual ICollection<UserVoucher>? UserVouchers { get; set;}
 
+        public static implicit operator Voucher(VoucherResponse v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

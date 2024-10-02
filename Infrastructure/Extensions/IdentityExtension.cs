@@ -72,10 +72,10 @@ namespace Infrastructure.Extensions
             })
             .AddGoogle(options =>
             {
-                var google = settings.IdentityServerConfig.Clients.GoogleWeb;
-                options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
-                options.ClientId = google.ExternalClientId;
-                options.ClientSecret = google.ExternalClientSecret;
+          //      var google = settings.IdentityServerConfig.Clients.GoogleWeb;
+            //    options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+               // options.ClientId = google.ExternalClientId;
+              //  options.ClientSecret = google.ExternalClientSecret;
             });
 
             //JwtExtensions.Configure(configuration);
