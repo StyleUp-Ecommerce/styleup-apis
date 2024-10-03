@@ -46,11 +46,12 @@ namespace Domain.Services
                         return product;
                     }).ToList();
 
-                    return new ListResult<GetAllTemplateCanvasResponse>(resultItems, resultItems.Count)
-                    {
-                        Skiped = request.Skip,
-                        PageSize = request.PageSize,
-                    };
+                return new ListResult<GetAllTemplateCanvasResponse>(resultItems, resultItems.Count)
+                {
+                    Total = Repository.Where(p => p.IsDeleted == false).Count(),
+                    Skiped = request.Skip,
+                    PageSize = request.PageSize,
+                };
             }
             catch (Exception ex)
             {
