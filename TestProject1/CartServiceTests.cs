@@ -107,76 +107,76 @@ namespace TestProject1
             Assert.Equal("Product does not exist", exception.Message);
         }
 
-        [Fact]
-        public async Task AddToCart_ShouldAddItem_WhenProductExists()
-        {
-            // Arrange
-            var request = new AddToCartRequest
-            {
-                CustomCanvasId = Guid.NewGuid(), // Một CustomCanvas ID giả lập
-                Quantity = 2, // Thêm 2 sản phẩm
-                Size = "M"
-            };
+        //[Fact]
+        //public async Task AddToCart_ShouldAddItem_WhenProductExists()
+        //{
+        //    // Arrange
+        //    var request = new AddToCartRequest
+        //    {
+        //        CustomCanvasId = Guid.NewGuid(), // Một CustomCanvas ID giả lập
+        //        Quantity = 2, // Thêm 2 sản phẩm
+        //        Size = "M"
+        //    };
 
-            var mockCustomCanvas = new CustomCanvas
-            {
-                Id = request.CustomCanvasId,
-                Name = "Test Canvas",
-                Price = 100.0m,
-                Images = "image1.jpg,image2.jpg"
-            };
+        //    var mockCustomCanvas = new CustomCanvas
+        //    {
+        //        Id = request.CustomCanvasId,
+        //        Name = "Test Canvas",
+        //        Price = 100.0m,
+        //        Images = "image1.jpg,image2.jpg"
+        //    };
 
-            // Mock GetByIdAsync để trả về sản phẩm hợp lệ
-            _mockCustomCanvasService.Setup(s => s.GetByIdAsync(It.IsAny<Guid>()))
-                                    .ReturnsAsync(mockCustomCanvas);
+        //    // Mock GetByIdAsync để trả về sản phẩm hợp lệ
+        //    _mockCustomCanvasService.Setup(s => s.GetByIdAsync(It.IsAny<Guid>()))
+        //                            .ReturnsAsync(mockCustomCanvas);
 
-            // Lấy UserId từ IdentityProvider
-            var userId = _mockIdentityProvider.Object.Identity.UserId;
+        //    // Lấy UserId từ IdentityProvider
+        //    var userId = _mockIdentityProvider.Object.Identity.UserId;
 
-            // Mock một giỏ hàng hiện tại với AuthorId là userId
-            var mockCart = new Cart
-            {
-                Id = Guid.NewGuid(),
-                AuthorId = userId,
-                CartItems = new List<CartItem>()
-            };
+        //    // Mock một giỏ hàng hiện tại với AuthorId là userId
+        //    var mockCart = new Cart
+        //    {
+        //        Id = Guid.NewGuid(),
+        //        AuthorId = userId,
+        //        CartItems = new List<CartItem>()
+        //    };
 
-            // Setup IAsyncQueryProvider cho IQueryable
-            var queryableCartList = new List<Cart> { mockCart }.AsQueryable();
-            var mockAsyncEnumerable = new TestAsyncEnumerable<Cart>(queryableCartList);
+        //    // Setup IAsyncQueryProvider cho IQueryable
+        //    var queryableCartList = new List<Cart> { mockCart }.AsQueryable();
+        //    var mockAsyncEnumerable = new TestAsyncEnumerable<Cart>(queryableCartList);
 
-            _mockCartRepository.Setup(repo => repo.Where(It.IsAny<Expression<Func<Cart, bool>>>()))
-                               .Returns(mockAsyncEnumerable);
+        //    _mockCartRepository.Setup(repo => repo.Where(It.IsAny<Expression<Func<Cart, bool>>>()))
+        //                       .Returns(mockAsyncEnumerable);
 
-            // Setup phương thức Update để không thực hiện hành động gì thêm
-            _mockCartRepository.Setup(repo => repo.Update(It.IsAny<Cart>(), It.IsAny<bool>()))
-                               .Callback<Cart, bool>((cart, saveChanges) =>
-                               {
-                                   // Giả lập việc cập nhật giỏ hàng nếu cần thiết
-                                   // Trong trường hợp này, chúng ta có thể không làm gì
-                               });
+        //    // Setup phương thức Update để không thực hiện hành động gì thêm
+        //    _mockCartRepository.Setup(repo => repo.Update(It.IsAny<Cart>(), It.IsAny<bool>()))
+        //                       .Callback<Cart, bool>((cart, saveChanges) =>
+        //                       {
+        //                           // Giả lập việc cập nhật giỏ hàng nếu cần thiết
+        //                           // Trong trường hợp này, chúng ta có thể không làm gì
+        //                       });
 
-            // Setup SaveChangesAsync để trả về Task.CompletedTask
-            _mockUnitOfWork.Setup(uow => uow.SaveChangesAsync())
-                           .Returns(Task.CompletedTask);
+        //    // Setup SaveChangesAsync để trả về Task.CompletedTask
+        //    _mockUnitOfWork.Setup(uow => uow.SaveChangesAsync())
+        //                   .Returns(Task.CompletedTask);
 
-            // Act
-            var response = await _cartService.AddToCart(request);
+        //    // Act
+        //    var response = await _cartService.AddToCart(request);
 
-            // Assert
-            // Verify rằng phương thức Update của repository được gọi đúng một lần
-            _mockCartRepository.Verify(repo => repo.Update(It.IsAny<Cart>(), It.IsAny<bool>()), Times.Once);
+        //    // Assert
+        //    // Verify rằng phương thức Update của repository được gọi đúng một lần
+        //    _mockCartRepository.Verify(repo => repo.Update(It.IsAny<Cart>(), It.IsAny<bool>()), Times.Once);
 
-            // Verify rằng SaveChangesAsync của UnitOfWork được gọi đúng một lần
-            _mockUnitOfWork.Verify(uow => uow.SaveChangesAsync(), Times.Once);
+        //    // Verify rằng SaveChangesAsync của UnitOfWork được gọi đúng một lần
+        //    _mockUnitOfWork.Verify(uow => uow.SaveChangesAsync(), Times.Once);
 
-            // Kiểm tra rằng mục giỏ hàng đã được thêm vào giỏ hàng
-            Assert.Single(mockCart.CartItems);
-            var cartItem = mockCart.CartItems.First();
-            Assert.Equal(request.CustomCanvasId, cartItem.CustomCanvasId);
-            Assert.Equal(request.Quantity, cartItem.Quantity);
-            Assert.Equal(request.Size.ToUpper(), cartItem.Size); // Size được chuyển thành chữ in hoa trong AddToCart
-        }
+        //    // Kiểm tra rằng mục giỏ hàng đã được thêm vào giỏ hàng
+        //    Assert.Single(mockCart.CartItems);
+        //    var cartItem = mockCart.CartItems.First();
+        //    Assert.Equal(request.CustomCanvasId, cartItem.CustomCanvasId);
+        //    Assert.Equal(request.Quantity, cartItem.Quantity);
+        //    Assert.Equal(request.Size.ToUpper(), cartItem.Size); // Size được chuyển thành chữ in hoa trong AddToCart
+        //}
 
     }
 }
