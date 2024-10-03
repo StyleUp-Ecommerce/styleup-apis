@@ -344,3 +344,4 @@ E:\CICD\TestProject1\obj\Debug\net8.0\refint\TestProject1.dll
 E:\CICD\TestProject1\obj\Debug\net8.0\TestProject1.pdb
 E:\CICD\TestProject1\obj\Debug\net8.0\TestProject1.genruntimeconfig.cache
 E:\CICD\TestProject1\obj\Debug\net8.0\ref\TestProject1.dll
+E:\CICD\TestProject1\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.InMemory.dll
