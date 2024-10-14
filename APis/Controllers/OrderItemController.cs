@@ -4,9 +4,11 @@ using CleanBase.Core.Services.Core.Base;
 using CleanBase.Core.ViewModels.Response;
 using CleanBase.Core.ViewModels.Response.Generic;
 using Core.Entities;
+using Core.Identity.Constants.Authorization;
 using Core.Services;
 using Core.ViewModels.Requests.OrderItem;
 using Core.ViewModels.Responses.OrderItem;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -22,7 +24,10 @@ namespace APis.Controllers
         }
 
         [HttpGet("{id}")]
-        [AllowAnonymous]
+        [Authorize(
+            AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,
+            Policy = ApiPolicy.AdminReadAccess
+        )]
         [ProducesResponseType(typeof(ActionResponse<OrderItemResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(FailActionResponse), (int)HttpStatusCode.BadRequest)]
         public virtual async Task<IActionResult> GetById(Guid id)
@@ -31,7 +36,10 @@ namespace APis.Controllers
         }
 
         [HttpPost("get-basic")]
-        [AllowAnonymous]
+        [Authorize(
+            AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,
+            Policy = ApiPolicy.AdminReadAccess
+        )]
         [ProducesResponseType(typeof(ActionResponse<ListResult<OrderItemResponse>>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(FailActionResponse), (int)HttpStatusCode.BadRequest)]
         public virtual async Task<IActionResult> GetAll([FromBody] OrderItemGetAllRequest request)
@@ -41,7 +49,10 @@ namespace APis.Controllers
 
 
         [HttpPost]
-        [AllowAnonymous]
+        [Authorize(
+            AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,
+            Policy = ApiPolicy.AdminWriteAccess
+        )]
         [ProducesResponseType(typeof(ActionResponse<OrderItemResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(FailActionResponse), (int)HttpStatusCode.BadRequest)]
         public virtual async Task<IActionResult> CreateOrUpdate([FromBody] OrderItemRequest entity)
@@ -51,7 +62,10 @@ namespace APis.Controllers
 
 
         [HttpPost("delete/{id}")]
-        [AllowAnonymous]
+        [Authorize(
+            AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,
+            Policy = ApiPolicy.AdminDeleteAccess
+        )]
         [ProducesResponseType(typeof(ActionResponse<bool>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(FailActionResponse), (int)HttpStatusCode.BadRequest)]
         public virtual async Task<IActionResult> DeActive(Guid id)

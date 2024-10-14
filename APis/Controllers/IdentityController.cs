@@ -58,6 +58,20 @@ public class IdentityController : ApiControllerBase
         return CreateSuccessResult(result);
     }
 
+    [AllowAnonymous]
+    [HttpPost("login-google")]
+    [ProducesResponseType(typeof(ActionResponse<LoginResponse>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(FailActionResponse), (int)HttpStatusCode.BadRequest)]
+    public async Task<IActionResult> LoginGoogleAsync(
+    [FromBody] LoginGoogleRequest request,
+    CancellationToken cancellationToken = default)
+    {
+        var result = await _identityService.LoginGoogleAsync(request);
+
+        return CreateSuccessResult(result);
+    }
+
+
     [Authorize(
         AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme
     )]

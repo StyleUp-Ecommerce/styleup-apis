@@ -4,6 +4,7 @@ using CleanBase.Core.Services.Core.Base;
 using CleanBase.Core.ViewModels.Response;
 using CleanBase.Core.ViewModels.Response.Generic;
 using Core.Entities;
+using Core.Identity.Constants.Authorization;
 using Core.Services;
 using Core.ViewModels.Requests.Cart;
 using Core.ViewModels.Responses.Cart;
@@ -22,18 +23,25 @@ namespace APis.Controllers
         {
         }
 
-        [HttpGet("{id}")]
-        [AllowAnonymous]
+        [HttpGet]
+        [Authorize(
+            AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,
+            Policy = ApiPolicy.ReadAccess
+        )]
         [ProducesResponseType(typeof(ActionResponse<CartResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(FailActionResponse), (int)HttpStatusCode.BadRequest)]
-        public virtual async Task<IActionResult> GetById(Guid id)
+        public virtual async Task<IActionResult> GetCartByUser()
         {
-            var result = await Service.GetCartById(id);
+            var result = await Service.GetCartByUser();
             return CreateSuccessResult(result);
         }
 
         [Authorize]
         [HttpPost("get-basic")]
+        [Authorize(
+            AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,
+            Policy = ApiPolicy.ReadAccess
+        )]
         [ProducesResponseType(typeof(ActionResponse<ListResult<CartResponse>>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(FailActionResponse), (int)HttpStatusCode.BadRequest)]
         public virtual async Task<IActionResult> GetAll([FromBody] GetAllCartRequest request)
@@ -43,6 +51,10 @@ namespace APis.Controllers
 
 
         [HttpPost]
+        [Authorize(
+            AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,
+            Policy = ApiPolicy.WriteAccess
+        )]
         [ProducesResponseType(typeof(ActionResponse<CartResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(FailActionResponse), (int)HttpStatusCode.BadRequest)]
         public virtual async Task<IActionResult> CreateOrUpdate([FromBody] CartRequest entity)
@@ -52,6 +64,10 @@ namespace APis.Controllers
 
 
         [HttpPost("delete/{id}")]
+        [Authorize(
+            AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,
+            Policy = ApiPolicy.DeleteAccess
+        )]
         [ProducesResponseType(typeof(ActionResponse<bool>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(FailActionResponse), (int)HttpStatusCode.BadRequest)]
         public virtual async Task<IActionResult> DeActive(Guid id)
@@ -60,7 +76,10 @@ namespace APis.Controllers
         }
 
         [HttpPost("add-to-cart")]
-        [AllowAnonymous]
+        [Authorize(
+            AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,
+            Policy = ApiPolicy.WriteAccess
+        )]
         [ProducesResponseType(typeof(ActionResponse<bool>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(FailActionResponse), (int)HttpStatusCode.BadRequest)]
         public virtual async Task<IActionResult> AddToCart(AddToCartRequest request)

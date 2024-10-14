@@ -4,12 +4,15 @@ using CleanBase.Core.Services.Core.Base;
 using CleanBase.Core.ViewModels.Response;
 using CleanBase.Core.ViewModels.Response.Generic;
 using Core.Entities;
+using Core.Identity.Constants.Authorization;
 using Core.Services;
 using Core.ViewModels.Requests.Provider;
 using Core.ViewModels.Responses.Provider;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using static DevExpress.Xpo.Helpers.AssociatedCollectionCriteriaHelper;
 namespace APis.Controllers
 {
     [Route("api/[controller]")]
@@ -22,7 +25,10 @@ namespace APis.Controllers
         }
 
         [HttpGet("{id}")]
-        [AllowAnonymous]
+        [Authorize(
+            AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,
+            Policy = ApiPolicy.AdminReadAccess
+        )]
         [ProducesResponseType(typeof(ActionResponse<ProviderResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(FailActionResponse), (int)HttpStatusCode.BadRequest)]
         public virtual async Task<IActionResult> GetById(Guid id)
@@ -31,7 +37,10 @@ namespace APis.Controllers
         }
 
         [HttpPost("get-basic")]
-        [AllowAnonymous]
+        [Authorize(
+            AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,
+            Policy = ApiPolicy.AdminReadAccess
+        )]
         [ProducesResponseType(typeof(ActionResponse<ListResult<ProviderResponse>>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(FailActionResponse), (int)HttpStatusCode.BadRequest)]
         public virtual async Task<IActionResult> GetAll([FromBody] GetAllProviderRequest request)
@@ -40,7 +49,10 @@ namespace APis.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
+        [Authorize(
+            AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,
+            Policy = ApiPolicy.AdminWriteAccess
+        )]
         [ProducesResponseType(typeof(ActionResponse<ProviderResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(FailActionResponse), (int)HttpStatusCode.BadRequest)]
         public virtual async Task<IActionResult> CreateOrUpdate([FromBody] ProviderRequest entity)
@@ -49,12 +61,35 @@ namespace APis.Controllers
         }
 
         [HttpPost("delete/{id}")]
-        [AllowAnonymous]
+        [Authorize(
+            AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,
+            Policy = ApiPolicy.AdminDeleteAccess
+        )]
         [ProducesResponseType(typeof(ActionResponse<bool>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(FailActionResponse), (int)HttpStatusCode.BadRequest)]
         public virtual async Task<IActionResult> DeActive(Guid id)
         {
             return await DeActiveInternal(id);
+        }
+
+        [HttpGet("color-support/{id}")]
+        [AllowAnonymous]
+        [ProducesResponseType(typeof(ActionResponse<string>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(FailActionResponse), (int)HttpStatusCode.BadRequest)]
+        public virtual async Task<IActionResult> ColorSupport(Guid id)
+        {
+            var result = await Service.ColorsSupport(id);
+            return CreateSuccessResult(result);
+        }
+
+        [HttpGet("size-support/{id}")]
+        [AllowAnonymous]
+        [ProducesResponseType(typeof(ActionResponse<string>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(FailActionResponse), (int)HttpStatusCode.BadRequest)]
+        public virtual async Task<IActionResult> SizesSupport(Guid id)
+        {
+            var result = await Service.SizesSupport(id);
+            return CreateSuccessResult(result);
         }
     }
 }

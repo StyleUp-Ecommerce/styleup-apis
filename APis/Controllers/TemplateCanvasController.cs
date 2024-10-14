@@ -4,9 +4,11 @@ using CleanBase.Core.Services.Core.Base;
 using CleanBase.Core.ViewModels.Response;
 using CleanBase.Core.ViewModels.Response.Generic;
 using Core.Entities;
+using Core.Identity.Constants.Authorization;
 using Core.Services;
 using Core.ViewModels.Requests.TemplateCanvas;
 using Core.ViewModels.Responses.TemplateCanvas;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -22,7 +24,10 @@ namespace APis.Controllers
         }
 
         [HttpGet("{id}")]
-        [AllowAnonymous]
+        [Authorize(
+            AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,
+            Policy = ApiPolicy.AdminReadAccess
+        )]
         [ProducesResponseType(typeof(ActionResponse<TemplateCanvasResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(FailActionResponse), (int)HttpStatusCode.BadRequest)]
         public virtual async Task<IActionResult> GetById(Guid id)
@@ -51,7 +56,10 @@ namespace APis.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
+        [Authorize(
+            AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,
+            Policy = ApiPolicy.AdminReadAccess
+        )]
         [ProducesResponseType(typeof(ActionResponse<TemplateCanvasResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(FailActionResponse), (int)HttpStatusCode.BadRequest)]
         public virtual async Task<IActionResult> CreateOrUpdate([FromBody] TemplateCanvasRequest entity)
@@ -60,12 +68,25 @@ namespace APis.Controllers
         }
 
         [HttpPost("delete/{id}")]
-        [AllowAnonymous]
+        [Authorize(
+            AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,
+            Policy = ApiPolicy.AdminDeleteAccess
+        )]
         [ProducesResponseType(typeof(ActionResponse<bool>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(FailActionResponse), (int)HttpStatusCode.BadRequest)]
         public virtual async Task<IActionResult> DeActive(Guid id)
         {
             return await DeActiveInternal(id);
+        }
+
+        [HttpPost("get-all-fillter")]
+        [AllowAnonymous]
+        [ProducesResponseType(typeof(ActionResponse<ListResult<TemplateCanvasResponse>>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(FailActionResponse), (int)HttpStatusCode.BadRequest)]
+        public virtual async Task<IActionResult> GetAllFillter(GetAllTemplateCanvasFillterRequest request)
+        {
+            var result = await Service.GetAllWithCustomFillter(request);
+            return CreateSuccessResult(result);
         }
     }
 }

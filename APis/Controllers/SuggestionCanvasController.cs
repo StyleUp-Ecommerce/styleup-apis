@@ -6,8 +6,8 @@ using CleanBase.Core.ViewModels.Response.Generic;
 using Core.Entities;
 using Core.Identity.Constants.Authorization;
 using Core.Services;
-using Core.ViewModels.Requests.Voucher;
-using Core.ViewModels.Responses.Voucher;
+using Core.ViewModels.Requests.SuggestionCanvas;
+using Core.ViewModels.Responses.SuggestionCanvas;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,18 +18,18 @@ namespace APis.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [ApiExplorerSettings(IgnoreApi = false)]
-    public partial class VoucherController : CRUDBaseController<Voucher, VoucherRequest, VoucherResponse, VoucherGetAllRequest, IVoucherService>
+    public class SuggestionCanvasController : CRUDBaseController<SuggestionCanvas, SuggestionCanvasRequest, SuggestionCanvasResponse, GetAllSuggestionCanvasRequest, ISuggestionCanvasService>
     {
-        public VoucherController(ICoreProvider coreProvider, IVoucherService service) : base(coreProvider, service)
+        public SuggestionCanvasController(ICoreProvider coreProvider, ISuggestionCanvasService service) : base(coreProvider, service)
         {
         }
 
         [HttpGet("{id}")]
         [Authorize(
             AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,
-            Policy = ApiPolicy.AdminReadAccess
+            Policy = ApiPolicy.ReadAccess
         )]
-        [ProducesResponseType(typeof(ActionResponse<VoucherResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ActionResponse<SuggestionCanvasResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(FailActionResponse), (int)HttpStatusCode.BadRequest)]
         public virtual async Task<IActionResult> GetById(Guid id)
         {
@@ -39,11 +39,11 @@ namespace APis.Controllers
         [HttpPost("get-basic")]
         [Authorize(
             AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,
-            Policy = ApiPolicy.AdminReadAccess
+            Policy = ApiPolicy.ReadAccess
         )]
-        [ProducesResponseType(typeof(ActionResponse<ListResult<VoucherResponse>>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ActionResponse<ListResult<SuggestionCanvasResponse>>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(FailActionResponse), (int)HttpStatusCode.BadRequest)]
-        public virtual async Task<IActionResult> GetAll([FromBody] VoucherGetAllRequest request)
+        public virtual async Task<IActionResult> GetAll([FromBody] GetAllSuggestionCanvasRequest request)
         {
             return await GetAllInternal(request);
         }
@@ -52,11 +52,11 @@ namespace APis.Controllers
         [HttpPost]
         [Authorize(
             AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,
-            Policy = ApiPolicy.AdminWriteAccess
+            Policy = ApiPolicy.AdminReadAccess
         )]
-        [ProducesResponseType(typeof(ActionResponse<VoucherResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ActionResponse<SuggestionCanvasResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(FailActionResponse), (int)HttpStatusCode.BadRequest)]
-        public virtual async Task<IActionResult> CreateOrUpdate([FromBody] VoucherRequest entity)
+        public virtual async Task<IActionResult> CreateOrUpdate([FromBody] SuggestionCanvasRequest entity)
         {
 
             return await CreateOrUpdateInternal(entity);
@@ -66,7 +66,7 @@ namespace APis.Controllers
         [HttpPost("delete/{id}")]
         [Authorize(
             AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,
-            Policy = ApiPolicy.AdminDeleteAccess
+            Policy = ApiPolicy.AdminDeleteAccess 
         )]
         [ProducesResponseType(typeof(ActionResponse<bool>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(FailActionResponse), (int)HttpStatusCode.BadRequest)]
@@ -75,14 +75,5 @@ namespace APis.Controllers
             return await DeActiveInternal(id);
         }
 
-        [HttpPost("check")]
-        [AllowAnonymous]
-        [ProducesResponseType(typeof(ActionResponse<VoucherResponse>), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(FailActionResponse), (int)HttpStatusCode.BadRequest)]
-        public virtual async Task<IActionResult> CheckValidVoucher(CheckValidVoucherRequest request)
-        {
-            var result = await Service.CheckValidVoucherAsync(request);
-            return CreateSuccessResult(result);
-        }
     }
 }
