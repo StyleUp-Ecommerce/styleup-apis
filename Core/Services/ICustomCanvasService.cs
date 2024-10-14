@@ -9,5 +9,7 @@ namespace Core.Services
     public interface ICustomCanvasService : IServiceBase<CustomCanvas, CustomCanvasRequest, GetCustomCanvasResponse, GetAllCustomCanvasRequest>
     {
         public Task<Dictionary<Guid, CustomCanvas>> GetDictionaryByIds(List<Guid> ids, Expression<Func<CustomCanvas, object>>[] excludedProperties);
+
+        public Task<Guid> CustomNewTemplate(Guid customCanvasId);
     }
 }

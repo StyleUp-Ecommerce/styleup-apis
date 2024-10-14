@@ -7,5 +7,7 @@ namespace Core.Services
 {
     public interface IProviderService : IServiceBase<Provider, ProviderRequest, ProviderResponse, GetAllProviderRequest>
     {
+        Task<string> ColorsSupport(Guid id);
+        Task<string> SizesSupport(Guid id);
     }
 }

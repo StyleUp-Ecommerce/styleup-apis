@@ -13,17 +13,17 @@ namespace Core.ViewModels.Profiles
         {
             CreateMap<CustomCanvasRequest, CustomCanvas>()
                 .ForMember(dest => dest.Color, opt => opt.MapFrom(src => src.Color))
-                .ForMember(dest => dest.Images, opt => opt.MapFrom(src => StringSpliter.MergeImageString(src.Images)));
+                .ForMember(dest => dest.Images, opt => opt.MapFrom(src => StringSpliter.ListToString(src.Images)));
             CreateMap<CustomCanvas, GetCustomCanvasResponse>()
                  .ForMember(dest => dest.Color, opt => opt.MapFrom(src => src.Color))
-                .ForMember(dest => dest.Images, opt => opt.MapFrom(src => StringSpliter.SplitImageString(src.Images)));
+                .ForMember(dest => dest.Images, opt => opt.MapFrom(src => StringSpliter.StringToList(src.Images)));
             CreateMap<CustomCanvas, CustomCanvasResponse>()
                  .ForMember(dest => dest.Color, opt => opt.MapFrom(src => src.Color))
-                .ForMember(dest => dest.Images, opt => opt.MapFrom(src => StringSpliter.SplitImageString(src.Images)));
+                .ForMember(dest => dest.Images, opt => opt.MapFrom(src => StringSpliter.StringToList(src.Images)));
             CreateMap<ListResult<CustomCanvas>, ListResult<CustomCanvasResponse>>();
             CreateMap<CustomCanvas, CustomCanvasProductResponse>()
                 .ForMember(dest => dest.Color, opt => opt.MapFrom(src => src.ColorString))
-                .ForMember(dest => dest.Images, opt => opt.MapFrom(src => StringSpliter.SplitImageString(src.Images)));
+                .ForMember(dest => dest.Images, opt => opt.MapFrom(src => StringSpliter.StringToList(src.Images)));
         }
     }
 }

@@ -7,6 +7,8 @@ namespace Core.Entities
 {
     public class Order : EntityNameAuditActive
     {
+        public Guid? TransactionId { get; set; }
+
         [Required]
         [MaxLength(200)]
         public string Address { get; set; }
@@ -44,5 +46,7 @@ namespace Core.Entities
 
         [ForeignKey(nameof(AuthorId))]
         public virtual User? User { get; set; }
+
+        public virtual Transaction? Transaction { get; set; }
     }
 }

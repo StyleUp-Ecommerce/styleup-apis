@@ -8,14 +8,14 @@ namespace Core.Helpers
 {
     public static class StringSpliter
     {
-        public static List<string> SplitImageString(string images)
+        public static List<string> StringToList(string data)
         {
-            return string.IsNullOrEmpty(images) ? new List<string>() : images.Split(',').ToList(); 
+            return string.IsNullOrEmpty(data) ? new List<string>() : data.Split(',').ToList(); 
         }
 
-        public static string MergeImageString(List<string> images)
+        public static string ListToString(List<string> data)
         {
-            return string.Join(",",images);
+            return string.Join(",",data);
         }
     }
 }

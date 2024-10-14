@@ -10,5 +10,7 @@ namespace Core.Services
     {
         public Task<ListResult<GetAllTemplateCanvasResponse>> GetAllTemplateCanvasAsync(GetAllTemplateCanvasRequest request);
         public Task<GetTemplateCanvasProductResponse> GetTemplateCanvasProductAsync(Guid request);
+        public Task<ListResult<TemplateCanvasFilterResponse>> GetAllWithCustomFillter(GetAllTemplateCanvasFillterRequest request);
+
     }
 }

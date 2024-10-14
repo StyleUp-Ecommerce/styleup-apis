@@ -13,7 +13,7 @@ namespace Core.ViewModels.Responses.OrderItem
         public decimal Price { get; set; }
         public string Color { get; set; }
         public string Size { get; set; }
-        public string ImageUrl { get; set; }
+        public string Image { get; set; }
         public string CustomCanvasId { get; set; }
     }
 }

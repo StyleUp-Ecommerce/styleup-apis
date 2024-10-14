@@ -10,15 +10,24 @@ namespace Core.Helpers
             {
                 return !string.IsNullOrEmpty(data)
                     ? data.Split(',')
-                        .Select(c => Enum.Parse<TEnum>(c.Trim().ToUpper()))
+                        .Select(c =>
+                        {
+                            var trimmed = c.Trim().ToUpper();
+                            if (!Enum.TryParse(typeof(TEnum), trimmed, out var result))
+                            {
+                                throw new DomainException($"Unable to convert '{trimmed}' to enum type {typeof(TEnum).Name}");
+                            }
+                            return (TEnum)result;
+                        })
                         .ToList()
                     : new List<TEnum>();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                throw new DomainException(ex.Message,"ERROR_VALUE",null,400,null);
+                throw new DomainException("Error parsing enum list.", ex.Message);
             }
         }
+
 
         public static string SerializeEnumList<TEnum>(this List<TEnum> enumList) where TEnum : struct
         {

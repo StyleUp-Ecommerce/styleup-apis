@@ -2,7 +2,8 @@
 {
     public static class ApiResource
     {
-        public const string Template = "template";
+        public const string User = "User";
+        public const string Admin = "Admin";
 
     }
 }

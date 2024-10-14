@@ -18,6 +18,7 @@ namespace Core.Identity.Interfaces
         Task<object> ChangePasswordAsync(ChangePasswordRequest request);
         Task<object> DeleteUserAsync(FindUserRequest request);
         Task<object> RegisterExternalAsync(AuthenticateResult result);
+        Task<LoginResponse> LoginGoogleAsync(LoginGoogleRequest request);
     }
 
 }

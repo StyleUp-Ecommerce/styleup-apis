@@ -14,18 +14,26 @@ namespace Core.ViewModels.Profiles
         protected override void DefaultMapping()
         {
             CreateMap<TemplateCanvasRequest, TemplateCanvas>() 
-                .ForMember(dest => dest.Images, opt => opt.MapFrom(src => StringSpliter.MergeImageString(src.Images)));
+                .ForMember(dest => dest.Images, opt => opt.MapFrom(src => StringSpliter.ListToString(src.Images)));
 
             CreateMap<TemplateCanvas, TemplateCanvasResponse>()
                 .ForMember(dest => dest.Provider, opt => opt.MapFrom(src => src.Provider))
-                .ForMember(dest => dest.Images, opt => opt.MapFrom(src => StringSpliter.SplitImageString(src.Images)));
+                .ForMember(dest => dest.Images, opt => opt.MapFrom(src => StringSpliter.StringToList(src.Images)));
+
+            CreateMap<TemplateCanvas, TemplateCanvasFilterResponse>()
+                .ForMember(dest => dest.Provider, opt => opt.MapFrom(src => src.Provider))
+                .ForMember(dest => dest.MinPrice, opt => opt.MapFrom(src => src.CustomCanvas.Min(c => c.Price)))
+                .ForMember(dest => dest.Colors, opt => opt.MapFrom(src => src.CustomCanvas != null
+                    ? string.Join(",", src.CustomCanvas.Select(c => c.Color))
+                    : string.Empty))
+                .ForMember(dest => dest.Images, opt => opt.MapFrom(src => StringSpliter.StringToList(src.Images)));
 
             CreateMap<ListResult<TemplateCanvas>, ListResult<TemplateCanvasResponse>>();
 
             CreateMap<List<TemplateCanvasResponse>, ListResult<TemplateCanvasResponse>>();
 
             CreateMap<TemplateCanvas, GetAllTemplateCanvasResponse>()
-                .ForMember(dest => dest.Images, opt => opt.MapFrom(src => StringSpliter.SplitImageString(src.Images)));
+                .ForMember(dest => dest.Images, opt => opt.MapFrom(src => StringSpliter.StringToList(src.Images)));
 
         }
     }

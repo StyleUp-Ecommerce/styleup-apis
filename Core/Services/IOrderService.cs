@@ -8,5 +8,6 @@ namespace Core.Services
     public interface IOrderService : IServiceBase<Order, OrderRequest, GetOrderResponse, OrderGetAllRequest>
     {
         public Task<OrderResponse> Ordering (OrderRequest request);
+        public Task<GetOrderByCodeResponse> GetOrderByCode(string code);
     }
 }

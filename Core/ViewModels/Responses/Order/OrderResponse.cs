@@ -1,5 +1,6 @@
 ﻿using CleanBase.Core.Entities;
 using Core.ViewModels.Responses.OrderItem;
+using Newtonsoft.Json;
 
 namespace Core.ViewModels.Responses.Order
 {
@@ -15,6 +16,10 @@ namespace Core.ViewModels.Responses.Order
         public string RecipientPhone { get; set; }
         public string RecipientEmail { get; set; }
         public string RecipientName { get; set; }
+
+        [JsonProperty("OrderStatus")]
+        public string StatusString { get; set; }
+
 
     }
 }

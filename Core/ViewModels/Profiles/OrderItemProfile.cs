@@ -1,6 +1,7 @@
 ﻿using CleanBase.Core.Domain.Generic;
 using CleanBase.Core.ViewModels.Profiles;
 using Core.Entities;
+using Core.Helpers;
 using Core.ViewModels.Requests.OrderItem;
 using Core.ViewModels.Responses.OrderItem;
 using System;
@@ -21,7 +22,8 @@ namespace Core.ViewModels.Profiles
             CreateMap<OrderItemRequest, OrderItemDetailResponse>();
             CreateMap<ListResult<OrderItem>, ListResult<OrderItemRequest>>();
             CreateMap<OrderItemDetailResponse, OrderItem>()
-                .ReverseMap();
+                .ReverseMap()
+                .ForMember(dest => dest.Image, opt => opt.MapFrom(src => StringSpliter.StringToList(src.CustomCanvas.Images)[0]));
 
 
         }
