@@ -4,7 +4,9 @@ using CleanBase.Core.Domain.Exceptions;
 using CleanBase.Core.Domain.Generic;
 using CleanBase.Core.Extensions;
 using CleanBase.Core.Services.Core.Base;
+using Core.Constants;
 using Core.Entities;
+using Core.Helpers;
 using Core.Services;
 using Core.ViewModels.Requests.TemplateCanvas;
 using Core.ViewModels.Responses.CustomCanvas;
@@ -12,6 +14,7 @@ using Core.ViewModels.Responses.TemplateCanvas;
 using Domain.Extensions.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Domain.Services
 {
@@ -80,6 +83,44 @@ namespace Domain.Services
                 Images = templateCanvas.Images.Split(",").ToList(),
                 Colors = string.Join(",", customCanvasProduct.Select(p => p.Color)),
                 Name = templateCanvas.Name
+            };
+
+        }
+        public async Task<ListResult<TemplateCanvasFilterResponse>> GetAllWithCustomFillter(GetAllTemplateCanvasFillterRequest request)
+        {
+            string[] sizesArray = request?.Filter.Sizes?.Split(',') ?? Array.Empty<string>();
+            var parsedSizes = request?.Filter.Sizes?.Split(',') ?? Array.Empty<string>();
+
+            Expression<Func<TemplateCanvas, bool>> colorExpression = string.IsNullOrEmpty(request.Filter.Color)
+                ? temp => true
+                : temp => temp.CustomCanvas.Any(p => p.ColorString == request.Filter.Color);
+
+            Expression<Func<TemplateCanvas, bool>> sizesExpression = temp => request.Filter.Sizes == null ||
+                temp.CustomCanvas.Any(c => parsedSizes.Any(par => c.Sizes.Contains(par)));
+
+            Expression<Func<TemplateCanvas, bool>> priceExpression = request.Filter.Sizes == null
+                ? temp => true
+                : temp => temp.CustomCanvas.Any(c => c.Price >= request.Filter.PriceRange.MinPrice
+                    && c.Price <= request.Filter.PriceRange.MaxPrice);
+
+            var combinedExpression = colorExpression
+                .AndAlso(sizesExpression)
+                .AndAlso(priceExpression);
+
+            var datas = await GetAll(request, Math.Max(request.PageSize, 1))
+                .Include(data => data.CustomCanvas)
+                .Where(combinedExpression)
+                .Select(d => Mapper.Map<TemplateCanvasFilterResponse>(d))
+                .ToListAsync();
+
+            return new ListResult<TemplateCanvasFilterResponse>(datas, datas.Count)
+            {
+                Total = await Repository
+                    .Where(combinedExpression)
+                    .Where(p => p.IsDeleted == false)
+                    .CountAsync(),
+                Skiped = request.Skip,
+                PageSize = request.PageSize,
             };
         }
     }

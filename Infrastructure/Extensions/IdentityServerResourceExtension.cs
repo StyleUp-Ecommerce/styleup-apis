@@ -73,8 +73,8 @@ public class IdentityServerResourceExtension
         {
             new()
             {
-                Name = DomainIdentityServerConstants.ApiResource.Template,
-                DisplayName = DomainIdentityServerConstants.ApiResource.Template,
+                Name = DomainIdentityServerConstants.ApiResource.User,
+                DisplayName = DomainIdentityServerConstants.ApiResource.User,
                 Scopes = new List<string>
                 {
                     DomainIdentityServerConstants.ApiScope.Read,

@@ -10,7 +10,7 @@ namespace Infrastructure.Context
     {
         //protected string Schema { get; set; } = "StyleUp";
         //protected string TablePrefix { get; set; } = "Entity_";
-
+        public DbSet<SuggestionCanvas> SuggestionCanvas { get; set; }
         public AppDbContext()
         {
         }
@@ -19,13 +19,6 @@ namespace Infrastructure.Context
         {
         }
 
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    if (!optionsBuilder.IsConfigured)
-        //    {
-        //        optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=StyleUp;Username=postgres;Password=23082003");
-        //    }
-        //}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

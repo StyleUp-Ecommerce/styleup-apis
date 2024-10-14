@@ -22,6 +22,8 @@ namespace Infrastructure.Repositories.DI
             services.AddScoped<IProviderRepository, ProviderRepository>();
             services.AddScoped<ITemplateCanvasRepository, TemplateCanvasRepository>();
             services.AddScoped<IVoucherRepository, VoucherRepository>();
+            services.AddScoped<ITransactionRepository, TransactionRepository>();
+            services.AddScoped<ISuggestionCanvasRepository, SuggestionCanvasRepository>();
 
             return services;
         }

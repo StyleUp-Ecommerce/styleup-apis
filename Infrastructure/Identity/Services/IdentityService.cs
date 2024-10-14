@@ -1,5 +1,6 @@
 ﻿using CleanBase.Core.Domain.Exceptions;
 using Core.Entities;
+using Core.Helpers;
 using Core.Identity.Email.Enums;
 using Core.Identity.Email.Interfaces;
 using Core.Identity.Interfaces;
@@ -13,8 +14,11 @@ using Infrastructure.Extensions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json;
 
 namespace Infrastructure.Identity.Services
 {
@@ -352,6 +356,79 @@ namespace Infrastructure.Identity.Services
                 RefreshToken = tokens.refreshToken,
             };
         }
+
+        public async Task<LoginResponse> LoginGoogleAsync(LoginGoogleRequest request)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var jwtToken = tokenHandler.ReadJwtToken(request.AccessToken);
+
+            var claims = jwtToken.Claims.ToDictionary(c => c.Type, c => c.Value);
+
+            var name = claims.TryGetValue("name", out var nameValue) ? nameValue : null;
+            var identitiesJson = claims.TryGetValue("identities", out var identitiesValue) ? identitiesValue : null;
+
+            var identities = string.IsNullOrEmpty(identitiesJson) ? null : JsonSerializer.Deserialize<Identities>(identitiesJson);
+            var email = identities?.Email?.FirstOrDefault(); 
+
+
+            if (email == null)
+            {
+                throw new Exception("Email not found in identities.");
+            }
+
+            var searchResult = await FindUserAsync(new(email));
+
+            //var claimsss = searchResult.SelectClaims();
+            //claimsss.Add(new Claim(JwtClaimTypes.Scope, ApiScope.AdminRead));
+            //claimsss.Add(new Claim(JwtClaimTypes.Scope, ApiScope.AdminDelete));
+            //claimsss.Add(new Claim(JwtClaimTypes.Scope, ApiScope.AdminUpdate));
+            //claimsss.Add(new Claim(JwtClaimTypes.Scope, ApiScope.AdminWrite));
+
+            //var claimsResult = await _userManager
+            //    .AddClaimsAsync(searchResult, claimsss)
+            //    .ConfigureAwait(false);
+
+            
+
+            if (searchResult == null)
+            {
+                var firstName = name?.Split(" ")[0] ?? "Unknown";
+                var lastName = name?.Split(" ")[^1] ?? "User";
+
+                var userNew = new CreateUserRequest(
+                    FirstName: firstName,
+                    LastName: lastName,
+                    Email: email,
+                    Password: Randomize.RandomString(10).GetHashCode().ToString()
+                );
+
+                var newClaims = searchResult.SelectClaims();
+                newClaims.Add(new Claim(JwtClaimTypes.Scope, ApiScope.Read));
+                newClaims.Add(new Claim(JwtClaimTypes.Scope, ApiScope.Delete));
+                newClaims.Add(new Claim(JwtClaimTypes.Scope, ApiScope.Write));
+                newClaims.Add(new Claim(JwtClaimTypes.Scope, ApiScope.Update));
+
+                var result = await _userManager.CreateAsync(userNew.ToEntity()).ConfigureAwait(false);
+
+                if (!result.Succeeded)
+                {
+                    throw new Exception("User creation failed: " + string.Join(", ", result.Errors.Select(e => e.Description)));
+                }
+
+                searchResult = await FindUserAsync(new(email));
+                await _userManager.AddClaimsAsync(searchResult, newClaims).ConfigureAwait(false);
+
+            }
+
+            var tokens = await GenerateTokensAsync(searchResult);
+
+            return new LoginResponse
+            {
+                AccessToken = tokens.accessToken,
+                RefreshToken = tokens.refreshToken,
+            };
+        }
+
 
     }
 

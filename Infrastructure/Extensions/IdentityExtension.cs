@@ -106,6 +106,32 @@ namespace Infrastructure.Extensions
                     policy.RequireClaim(JwtClaimTypes.Scope, ApiScope.Delete);
                 });
 
+
+                options.AddPolicy(ApiPolicy.AdminReadAccess, policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim(JwtClaimTypes.Scope, ApiScope.AdminRead);
+                });
+
+                options.AddPolicy(ApiPolicy.AdminWriteAccess, policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim(JwtClaimTypes.Scope, ApiScope.AdminWrite);
+                });
+
+                options.AddPolicy(ApiPolicy.AdminUpdateAccess, policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim(JwtClaimTypes.Scope, ApiScope.AdminUpdate);
+                });
+
+                options.AddPolicy(ApiPolicy.AdminDeleteAccess, policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim(JwtClaimTypes.Scope, ApiScope.AdminDelete);
+                });
+
+
                 options.AddPolicy(ApiPolicy.UpdateProfilePasswordAccess, policy =>
                 {
                     policy.RequireAuthenticatedUser();

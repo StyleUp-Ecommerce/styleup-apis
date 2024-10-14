@@ -13,7 +13,11 @@ using Core.Services;
 using Core.ViewModels.Requests.Order;
 using Core.ViewModels.Responses.Order;
 using Core.ViewModels.Responses.OrderItem;
+using Core.ViewModels.Responses.Transaction;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using System.Linq.Expressions;
+using System.Web;
 
 namespace Domain.Services
 {
@@ -34,6 +38,40 @@ namespace Domain.Services
             _emailService = emailService;
         }
 
+        public async Task<GetOrderByCodeResponse> GetOrderByCode(string code)
+        {
+            var decodedCode = HttpUtility.UrlDecode(code);
+            var orderResponse = await this.Repository
+                .Where(p => p.OrderCode == decodedCode)
+                .AsNoTracking()
+                .Include(p => p.OrderItems)
+                .ThenInclude(p => p.CustomCanvas)
+                .Select(p => new
+                {
+                    Order = Mapper.Map<OrderResponse>(p),
+                    OrderItemsDetail = Mapper.Map<ICollection<OrderItemDetailResponse>>(p.OrderItems)
+                })
+                .SingleOrDefaultAsync();
+
+            if (orderResponse is null)
+                throw new DomainException("Order not exits !", "NOT_EXITS", null, 400, null);
+
+            orderResponse.Order.Items = orderResponse?.OrderItemsDetail?.ToList();
+            orderResponse.Order.TotalPrice = orderResponse.OrderItemsDetail.Sum(p => p.Quantity*p.Price);
+
+            var transactionWithOrderCodeResponse = this.UnitOfWork.Repository<ITransactionRepository>()
+                .Where(p => p.TransactionCode == orderResponse.Order.OrderCode)
+                .AsNoTracking()
+                .Select(p => Mapper.Map<GetTransactionWithOrderCodeResponse>(p))
+                .SingleOrDefault();
+
+            return new GetOrderByCodeResponse
+            {
+                Order = orderResponse.Order,
+                Transaction = transactionWithOrderCodeResponse
+            };
+        }
+
         public async Task<OrderResponse> Ordering(OrderRequest request)
         {
             using (var tran = this.UnitOfWork.BeginTransaction())
@@ -41,10 +79,9 @@ namespace Domain.Services
                 try
                 {
                     var customCanvasIds = request.Items.Select(i => i.CustomCanvasId).ToList();
-
                     var canvasDic = await _customCanvasService.GetDictionaryByIds(customCanvasIds,
                         new Expression<Func<CustomCanvas, object>>[] { canvas => canvas.Content });
-
+                    
                     if (canvasDic is null)
                     {
                         throw new DomainException("No products exist", null, null, 400, null);
@@ -89,8 +126,6 @@ namespace Domain.Services
                         UnitOfWork.Repository<IOrderItemRepository>().Add(newOrderItem);
                         return orderItem;
                     }).ToList();
-
-                    
 
                     //this.Repository.Update(currenOrder);
 

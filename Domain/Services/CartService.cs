@@ -25,80 +25,95 @@ namespace Domain.Services
         public async Task<CartResponse> AddToCart(AddToCartRequest request)
         {
             request.NormalizeData();
-            var authorId = IdentityProvider.Identity.UserId;
+                var authorId = IdentityProvider.Identity.UserId;
 
-            var validProduct = await _customCanvasService.GetByIdAsync(request.CustomCanvasId)
-                                ?? throw new DomainException("Product does not exist", null, null, 400, null);
+                var validProduct = await _customCanvasService.GetByIdAsync(request.CustomCanvasId)
+                                    ?? throw new DomainException("Product does not exist", null, null, 400, null);
 
-            var cart = await Repository
-                        .Where(p => p.AuthorId == authorId)
-                        .Include(p => p.CartItems)
-                        .SingleOrDefaultAsync()
-                        ?? new Cart
-                        {
-                            AuthorId = authorId,
-                            CartItems = new List<CartItem>()
-                        };
+                var cart = await Repository
+                            .Where(p => p.AuthorId == authorId)
+                            .Include(p => p.CartItems)
+                            .SingleOrDefaultAsync()
+                            ?? new Cart
+                            {
+                                AuthorId = authorId,
+                                CartItems = new List<CartItem>()
+                            };
 
-            var existingItem = cart.CartItems.FirstOrDefault(ci => 
-                                    ci.CustomCanvasId == request.CustomCanvasId 
-                                    && string.Equals(request.Size, ci.Size, StringComparison.OrdinalIgnoreCase));
+                var existingItem = cart.CartItems.FirstOrDefault(ci =>
+                                        ci.CustomCanvasId == request.CustomCanvasId
+                                        && string.Equals(request.Size, ci.Size, StringComparison.OrdinalIgnoreCase));
 
-            if (existingItem is not null)
-            {
-                existingItem.Quantity += request.Quantity;
-
-                if (existingItem.Quantity <= 0)
-                    cart.CartItems.Remove(existingItem);
-            }
-            else
-            {
-                cart.CartItems.Add(new CartItem
+                if (existingItem is not null)
                 {
-                    CartId = cart.Id,
-                    Quantity = request.Quantity,
-                    Size = request.Size.ToUpper(),
-                    CustomCanvasId = request.CustomCanvasId
-                });
+                    existingItem.Quantity += request.Quantity;
+
+                    if (existingItem.Quantity <= 0)
+                        cart.CartItems.Remove(existingItem);
+                }
+                else
+                {
+                    cart.CartItems.Add(new CartItem
+                    {
+                        CartId = cart.Id,
+                        Quantity = request.Quantity,
+                        Size = request.Size.ToUpper(),
+                        CustomCanvasId = request.CustomCanvasId
+                    });
+                }
+
+                var canvasIds = cart.CartItems.Select(ci => ci.CustomCanvasId).ToList();
+
+                var productDict = (await _customCanvasService.GetDictionaryByIds(
+                    canvasIds,
+                    new Expression<Func<CustomCanvas, object>>[] { canvas => canvas.Content }));
+
+
+                if (cart.Id == Guid.Empty)
+                    Repository.Add(cart);
+
+                await UnitOfWork.SaveChangesAsync();
+
+                return new CartResponse
+                {
+                    Id = cart.Id,
+                    Items = cart.CartItems
+                        .Select(ci =>
+                        {
+                            if (!productDict.TryGetValue(ci.CustomCanvasId, out var product))
+                            {
+                                return null;
+                            }
+
+                            return new CartItemResponse
+                            {
+                                Quantity = ci.Quantity,
+                                Size = ci.Size.ToUpper(),
+                                CustomCanvas = new GetCanvasInfoCartResponse
+                                {
+                                    Id = product.Id,
+                                    Price = product.Price,
+                                    Images = product.Images.Split(",").ToList(),
+                                    Name = product?.Name
+                                }
+                            };
+                    })
+                    .Where(item => item != null)
+                    .Select(item => item!)
+                    .ToList(),
+
+                    TotalPrice = cart.CartItems.Sum(ci =>
+                    {
+                        if (!productDict.TryGetValue(ci.CustomCanvasId, out var product))
+                        {
+                            return 0m;
+                        }
+                        return product.Price;
+                    })
+                };
             }
 
-            var canvasIds = cart.CartItems.Select(ci => ci.CustomCanvasId).ToList();
-
-            var productDict = (await _customCanvasService.GetDictionaryByIds(
-                canvasIds, 
-                new Expression<Func<CustomCanvas, object>>[] { canvas => canvas.Content }));
-
-
-            if (cart.Id == Guid.Empty)
-                Repository.Add(cart);
-
-            await UnitOfWork.SaveChangesAsync();
-
-            return new CartResponse
-            {
-                Id = cart.Id,
-                Items = cart.CartItems.Select(ci => {
-
-                    var product = productDict[ci.CustomCanvasId]; 
-                    return new CartItemResponse
-                    {
-                        Quantity = ci.Quantity,
-                        Size = ci.Size.ToUpper(),
-                        CustomCanvas = new GetCanvasInfoCartResponse
-                        {
-                            Id= product.Id,
-                            Price = product.Price,
-                            Images = product.Images.Split(",").ToList(),
-                            Name = product.Name
-                        }
-                    };
-                }).ToList(),
-                TotalPrice = cart.CartItems.Sum(ci => ci.Quantity * ci.CustomCanvas.Price) 
-            };
-        }
-
-
-        public async Task<CartResponse> GetCartById(Guid id)
+        public async Task<CartResponse> GetCartByUser()
         {
             var authorId = IdentityProvider.Identity.UserId;
 
@@ -123,24 +138,39 @@ namespace Domain.Services
             return new CartResponse
             {
                 Id = cart.Id,
-                Items = cart.CartItems.Select(ci =>
-                {
-
-                    var product = productDict[ci.CustomCanvasId];
-                    return new CartItemResponse
+                Items = cart.CartItems
+                    .Select(ci =>
                     {
-                        Quantity = ci.Quantity,
-                        Size = ci.Size,
-                        CustomCanvas = new GetCanvasInfoCartResponse
+                        if (!productDict.TryGetValue(ci.CustomCanvasId, out var product))
                         {
-                            Id = product.Id,
-                            Price = product.Price,
-                            Images = product.Images.Split(",").ToList(),
-                            Name = product.Name
+                            return null;
                         }
-                    };
-                }).ToList(),
-                TotalPrice = cart.CartItems.Sum(ci => ci.Quantity * ci.CustomCanvas.Price)
+
+                        return new CartItemResponse
+                        {
+                            Quantity = ci.Quantity,
+                            Size = ci.Size.ToUpper(),
+                            CustomCanvas = new GetCanvasInfoCartResponse
+                            {
+                                Id = product.Id,
+                                Price = product.Price,
+                                Images = product.Images.Split(",").ToList(),
+                                Name = product?.Name
+                            }
+                        };
+                    })
+                    .Where(item => item != null)
+                    .Select(item => item!)
+                    .ToList(),
+
+                TotalPrice = cart.CartItems.Sum(ci =>
+                {
+                    if (!productDict.TryGetValue(ci.CustomCanvasId, out var product))
+                    {
+                        return 0m;
+                    }
+                    return product.Price;
+                })
             };
         }
 
