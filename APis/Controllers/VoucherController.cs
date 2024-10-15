@@ -8,6 +8,7 @@ using Core.Identity.Constants.Authorization;
 using Core.Services;
 using Core.ViewModels.Requests.Voucher;
 using Core.ViewModels.Responses.Voucher;
+using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -82,6 +83,16 @@ namespace APis.Controllers
         public virtual async Task<IActionResult> CheckValidVoucher(CheckValidVoucherRequest request)
         {
             var result = await Service.CheckValidVoucherAsync(request);
+            return CreateSuccessResult(result);
+        }
+
+        [HttpGet("get-voucher-by-code")]
+        [AllowAnonymous]
+        [ProducesResponseType(typeof(ActionResponse<VoucherResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(FailActionResponse), (int)HttpStatusCode.BadRequest)]
+        public virtual async Task<IActionResult> GetVoucherByCode([FromQuery]string request)
+        {
+            var result = await Service.GetVoucherByCode(request);
             return CreateSuccessResult(result);
         }
     }

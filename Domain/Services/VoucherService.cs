@@ -54,9 +54,9 @@ namespace Domain.Services
             return Mapper.Map<VoucherResponse>(voucher);
         }
 
-        public Task<VoucherResponse> GetVoucherByCode(string code)
+        public async Task<VoucherResponse> GetVoucherByCode(string code)
         {
-            var voucher =  Repository.Where(p => p.Code.Trim() == code.Trim())
+            var voucher =  await Repository.Where(p => p.Code.Trim() == code.Trim())
                             .Select(p => new VoucherResponse
                             {
                                 Id = p.Id,

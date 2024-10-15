@@ -47,7 +47,7 @@ namespace APis.Controllers
 
         [HttpPost("get-basic")]
         [AllowAnonymous]
-        [ProducesResponseType(typeof(ActionResponse<ListResult<TemplateCanvasResponse>>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ActionResponse<ListResult<GetAllTemplateCanvasResponse>>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(FailActionResponse), (int)HttpStatusCode.BadRequest)]
         public virtual async Task<IActionResult> GetAll([FromBody] GetAllTemplateCanvasRequest request)
         {

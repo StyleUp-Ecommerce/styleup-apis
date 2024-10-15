@@ -5,7 +5,6 @@ using Core.Entities;
 using Core.Services;
 using Core.ViewModels.Requests.Provider;
 using Core.ViewModels.Responses.Provider;
-using DevExpress.Xpo;
 
 namespace Domain.Services
 {
@@ -17,10 +16,10 @@ namespace Domain.Services
 
         public async Task<string> ColorsSupport(Guid id)
         {
-            var colors = await this.Repository
+            var colors = this.Repository
                     .Where(r => r.Id == id)
                     .Select(r => r.Colors)
-                    .FirstOrDefaultAsync();
+                    .FirstOrDefault();
 
             return colors;
         }
@@ -28,10 +27,10 @@ namespace Domain.Services
 
         public async Task<string> SizesSupport(Guid id)
         {
-            var sizes = await this.Repository
+            var sizes = this.Repository
                     .Where(r => r.Id == id)
                     .Select(r => r.Sizes)
-                    .FirstOrDefaultAsync();
+                    .FirstOrDefault();
 
             return sizes;
         }

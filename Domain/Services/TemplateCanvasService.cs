@@ -24,6 +24,26 @@ namespace Domain.Services
         {
         }
 
+        protected override IQueryable<TemplateCanvas> ApplyGetByIdOperator(IQueryable<TemplateCanvas> query)
+        {
+            return query
+                .Include(p => p.Provider)
+                .Include(c => c.CustomCanvas)
+                .Select(canvas => new TemplateCanvas
+                {
+                    Id = canvas.Id,
+                    Descriptions = canvas.Descriptions,
+                    Images = canvas.Images,
+                    Name = canvas.Name,
+                    TemplateCode = canvas.TemplateCode,
+                    Provider = canvas.Provider,
+                    CustomCanvas = canvas.CustomCanvas.Select(cc => new CustomCanvas
+                    {
+                        ColorString = cc.ColorString
+                    }).ToList()
+                });
+        }
+
         public async Task<ListResult<GetAllTemplateCanvasResponse>> GetAllTemplateCanvasAsync(GetAllTemplateCanvasRequest request)
         {
             request.NormalizeData();
@@ -80,9 +100,9 @@ namespace Domain.Services
             return new GetTemplateCanvasProductResponse
             {
                 Products = customCanvasProduct,
-                Images = templateCanvas.Images.Split(",").ToList(),
+                Images = templateCanvas?.Images?.Split(",")?.ToList(),
                 Colors = string.Join(",", customCanvasProduct.Select(p => p.Color)),
-                Name = templateCanvas.Name
+                Name = templateCanvas?.Name
             };
 
         }
@@ -109,6 +129,7 @@ namespace Domain.Services
 
             var datas = await GetAll(request, Math.Max(request.PageSize, 1))
                 .Include(data => data.CustomCanvas)
+                .Include(data => data.Provider)
                 .Where(combinedExpression)
                 .Select(d => Mapper.Map<TemplateCanvasFilterResponse>(d))
                 .ToListAsync();

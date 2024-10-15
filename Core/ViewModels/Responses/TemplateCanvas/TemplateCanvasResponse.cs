@@ -1,5 +1,6 @@
 ﻿using CleanBase.Core.ViewModels.Response.Base;
 using Core.Entities;
+using Core.ViewModels.Responses.CustomCanvas;
 using Core.ViewModels.Responses.Provider;
 
 namespace Core.ViewModels.Responses.TemplateCanvas
@@ -11,8 +12,6 @@ namespace Core.ViewModels.Responses.TemplateCanvas
         public String Colors { get; set; }
         public string Content { get; set; }
         public string TemplateCode { get; set; }
-        public ICollection<Core.Entities.CustomCanvas> CustomCanvas { get; set; }
-
         public ProviderResponse Provider { get; set; }
     }
 }

@@ -5,6 +5,7 @@ using Core.Entities;
 using Core.Helpers;
 using Core.ViewModels.Requests.TemplateCanvas;
 using Core.ViewModels.Responses.CustomCanvas;
+using Core.ViewModels.Responses.Provider;
 using Core.ViewModels.Responses.TemplateCanvas;
 
 namespace Core.ViewModels.Profiles
@@ -17,10 +18,13 @@ namespace Core.ViewModels.Profiles
                 .ForMember(dest => dest.Images, opt => opt.MapFrom(src => StringSpliter.ListToString(src.Images)));
 
             CreateMap<TemplateCanvas, TemplateCanvasResponse>()
+                .IncludeMembers(src => src.Provider)
                 .ForMember(dest => dest.Provider, opt => opt.MapFrom(src => src.Provider))
+                .ForMember(dest => dest.Colors, opt => opt.MapFrom(src => string.Join(",",src.CustomCanvas.Select(c => c.Color))))
                 .ForMember(dest => dest.Images, opt => opt.MapFrom(src => StringSpliter.StringToList(src.Images)));
 
             CreateMap<TemplateCanvas, TemplateCanvasFilterResponse>()
+                .IncludeMembers(src => src.Provider)
                 .ForMember(dest => dest.Provider, opt => opt.MapFrom(src => src.Provider))
                 .ForMember(dest => dest.MinPrice, opt => opt.MapFrom(src => src.CustomCanvas.Min(c => c.Price)))
                 .ForMember(dest => dest.Colors, opt => opt.MapFrom(src => src.CustomCanvas != null
@@ -34,6 +38,9 @@ namespace Core.ViewModels.Profiles
 
             CreateMap<TemplateCanvas, GetAllTemplateCanvasResponse>()
                 .ForMember(dest => dest.Images, opt => opt.MapFrom(src => StringSpliter.StringToList(src.Images)));
+
+            CreateMap<Provider, TemplateCanvasResponse>();
+            CreateMap<Provider, TemplateCanvasFilterResponse>();
 
         }
     }
