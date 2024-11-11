@@ -47,7 +47,6 @@ namespace Domain.Services
         public async Task<ListResult<GetAllTemplateCanvasResponse>> GetAllTemplateCanvasAsync(GetAllTemplateCanvasRequest request)
         {
             request.NormalizeData();
-
             try
             {
                 var source = GetAll(request, Math.Max(request.PageSize, 1))
@@ -59,7 +58,7 @@ namespace Domain.Services
                     {
                         var product = Mapper.Map<GetAllTemplateCanvasResponse>(templateCanvas);
                         product.Colors = templateCanvas.CustomCanvas != null && templateCanvas.CustomCanvas.Any()
-                            ? string.Join(",", templateCanvas.CustomCanvas.Select(c => c.ColorString))
+                            ? string.Join(",", templateCanvas.CustomCanvas.Select(c => c.ColorString).Distinct())
                             : string.Empty;
 
                         product.MinPrice = templateCanvas.CustomCanvas != null && templateCanvas.CustomCanvas.Any()
@@ -88,21 +87,23 @@ namespace Domain.Services
                 .Where(p => p.Id == id)
                 .ExcludeProperties(p => p.Content)
                 .FirstOrDefault();
-
             if (templateCanvas is null)
                 throw new DomainException("Item not have anything", "NOT_EXITS", null, 200);
 
-            var customCanvasProduct = templateCanvas.CustomCanvas.Select(templateCanvas =>
-            {
-                return Mapper.Map<CustomCanvas, CustomCanvasProductResponse>(templateCanvas);
-            }).ToList();
+            var customCanvasProduct = templateCanvas.CustomCanvas
+                .Where(cc => cc.IsPublic)
+                .Select(templateCanvas =>
+                    Mapper.Map<CustomCanvas, CustomCanvasProductResponse>(templateCanvas)
+                )
+                .ToList();
+
 
             return new GetTemplateCanvasProductResponse
             {
                 Products = customCanvasProduct,
-                Images = templateCanvas?.Images?.Split(",")?.ToList(),
-                Colors = string.Join(",", customCanvasProduct.Select(p => p.Color)),
-                Name = templateCanvas?.Name
+                Images = templateCanvas?.Images?.Split(",")?.ToList() ?? new List<string>(),
+                Colors = string.Join(",", customCanvasProduct.Select(p => p.Color).Distinct()),
+                Name = templateCanvas?.Name ?? "Anonymus"
             };
 
         }
@@ -115,10 +116,12 @@ namespace Domain.Services
                 ? temp => true
                 : temp => temp.CustomCanvas.Any(p => p.ColorString == request.Filter.Color);
 
-            Expression<Func<TemplateCanvas, bool>> sizesExpression = temp => request.Filter.Sizes == null ||
-                temp.CustomCanvas.Any(c => parsedSizes.Any(par => c.Sizes.Contains(par)));
+        
+            Expression<Func<TemplateCanvas, bool>> sizesExpression = string.IsNullOrEmpty(request.Filter.Sizes)
+                ? temp => true
+                : temp => temp.CustomCanvas.Any(c => parsedSizes.Any(par => c.Sizes.Contains(par)));
 
-            Expression<Func<TemplateCanvas, bool>> priceExpression = request.Filter.Sizes == null
+            Expression<Func<TemplateCanvas, bool>> priceExpression =  request.Filter.PriceRange.MaxPrice != 0
                 ? temp => true
                 : temp => temp.CustomCanvas.Any(c => c.Price >= request.Filter.PriceRange.MinPrice
                     && c.Price <= request.Filter.PriceRange.MaxPrice);
@@ -127,13 +130,14 @@ namespace Domain.Services
                 .AndAlso(sizesExpression)
                 .AndAlso(priceExpression);
 
-            var datas = await GetAll(request, Math.Max(request.PageSize, 1))
+            var datas = await this.Repository
+                .Where(combinedExpression)
                 .Include(data => data.CustomCanvas)
                 .Include(data => data.Provider)
-                .Where(combinedExpression)
+                .Take(request.PageSize)
                 .Select(d => Mapper.Map<TemplateCanvasFilterResponse>(d))
                 .ToListAsync();
-
+            
             return new ListResult<TemplateCanvasFilterResponse>(datas, datas.Count)
             {
                 Total = await Repository

@@ -56,10 +56,11 @@ namespace APis.Controllers
         }
 
         [HttpPost]
-        [Authorize(
-            AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,
-            Policy = ApiPolicy.AdminReadAccess
-        )]
+        //[Authorize(
+        //    AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,
+        //    Policy = ApiPolicy.AdminReadAccess
+        //)]
+        [AllowAnonymous]
         [ProducesResponseType(typeof(ActionResponse<TemplateCanvasResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(FailActionResponse), (int)HttpStatusCode.BadRequest)]
         public virtual async Task<IActionResult> CreateOrUpdate([FromBody] TemplateCanvasRequest entity)

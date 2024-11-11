@@ -1,4 +1,5 @@
 using APis.Extensions;
+using Azure.Identity;
 using CleanBase.Core.Api.Authorization;
 using CleanBase.Core.Api.Extensions;
 using CleanBase.Core.Api.Middlewares;
@@ -27,28 +28,31 @@ var config = builder.Configuration;
 
 // Configure logging
 Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(config) // ??c t? appsettings.json
     .Enrich.FromLogContext()
-    .WriteTo.Console()
     .CreateLogger();
 
 builder.Services.AddSingleton(Log.Logger);
 
 builder
     .Configuration.SetBasePath(builder.Environment.ContentRootPath)
-    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
-    .AddEnvironmentVariables();
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true);
+
 
 
 // Configure configuration sources
-var vaultName = config["KeyVault:VaultName"];
+//var vaultName = config["KeyVault:VaultName"];
+//var clientId = config["AzureAD:ClientId"];
+//var clientSecret = config["AzureAD:ClientSecret"];
+//var tenantId = config["AzureAD:TenantId"];
 
-// Uncomment if Key Vault is used
-// builder.Configuration.AddAzureKeyVault(
-//     $"https://{vaultName}.vault.azure.net/",
-//     config["KeyVault:ClientId"],
-//     config["KeyVault:ClientSecret"],
-//     new PrefixKeyVaultManager(config["KeyVault:Prefix"])
-// );
+//var credential = new ClientSecretCredential(tenantId,clientId, clientSecret);
+
+//builder.Configuration.AddAzureKeyVault(
+//    new Uri($"https://styleup-dev-key.vault.azure.net/"),
+//    credential
+//);
+
 
 // Add services to the container
 builder.Services.AddControllers();

@@ -17,8 +17,8 @@ namespace Core.ViewModels.Requests.TemplateCanvas
     public class TemplateCanvasFilter
     {
         public PriceRange PriceRange { get; set; }
-        public string Color { get; set; }
-        public string Sizes { get; set; }
+        public string? Color { get; set; }
+        public string? Sizes { get; set; }
     }
     public class PriceRange
     {

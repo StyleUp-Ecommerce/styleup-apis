@@ -9,5 +9,7 @@ namespace Core.Services
     {
         public Task<OrderResponse> Ordering (OrderRequest request);
         public Task<GetOrderByCodeResponse> GetOrderByCode(string code);
+
+        Task<bool> ChangeOrderStatus(ChangeOrderStatusRequest request);
     }
 }

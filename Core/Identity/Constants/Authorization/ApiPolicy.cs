@@ -12,4 +12,5 @@ public static class ApiPolicy
     public const string AdminUpdateAccess = "admin_update_access";
     public const string AdminDeleteAccess = "admin_delete_access";
     public const string UpdateProfilePasswordAccess = "update_profile_password_access";
+    public const string Test = "admin_test";
 }

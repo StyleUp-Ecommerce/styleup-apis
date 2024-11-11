@@ -23,6 +23,7 @@ namespace Domain
             services.AddScoped<IOrderItemService, OrderItemService>();
             services.AddScoped<IVoucherService, VoucherService>();
             services.AddScoped<ISuggestionCanvasService, SuggestionCanvasService>();
+            services.AddScoped<IDashboardService, DashboardService>();
 
             services.AddSingleton(_ =>
             {

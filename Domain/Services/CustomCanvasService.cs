@@ -36,8 +36,10 @@ namespace Domain.Services
                     TemplateId = p.TemplateId,
                     AuthorId = IdentityProvider.Identity.UserId,
                     IsPublic = false,
-                    Images = "",
-                    LensVRUrl = ""
+                    Images = "https://cdn.rushordertees.com/design/ZoomImage.php?src=5521363_f&style=RT2000&colorCode=WHT&x=240&y=300&width=880&height=880&scale=1.7&watermark=false&autoInvertDesign=true",
+                    LensVRUrl = "",
+                    Price = p.Price,
+                    Name = $"{p.Name}-CUSTOM-{p.Color}-{IdentityProvider.Identity.UserName}",
                 })
                 .FirstOrDefault();
 

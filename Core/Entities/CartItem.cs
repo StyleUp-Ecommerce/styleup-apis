@@ -15,13 +15,8 @@ namespace Core.Entities
         public string Size { get; set; }
 
         [Required]
-        public Guid CartId { get; set; }
-
-        [Required]
         public Guid CustomCanvasId { get; set; }
 
-        [ForeignKey("CartId")]
-        public virtual Cart Cart { get; set; }
         [ForeignKey("CustomCanvasId")]
         public virtual CustomCanvas CustomCanvas { get; set; }
 

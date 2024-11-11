@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240929152657_AddOrderFieldRecipientEmail")]
-    partial class AddOrderFieldRecipientEmail
+    [Migration("20240929152657_AddOrderFieldRecipientMail")]
+    partial class AddOrderFieldRecipientMail
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

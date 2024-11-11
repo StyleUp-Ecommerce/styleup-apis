@@ -83,6 +83,19 @@ namespace APis.Controllers
             return CreateSuccessResult(result);
         }
 
+        [HttpPost("change-status")]
+        [Authorize(
+            AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,
+            Policy = ApiPolicy.AdminUpdateAccess
+        )]
+        [ProducesResponseType(typeof(ActionResponse<bool>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(FailActionResponse), (int)HttpStatusCode.BadRequest)]
+        public virtual async Task<IActionResult> ChangeOrderStatus([FromBody] ChangeOrderStatusRequest request)
+        {
+            var result = await this.Service.ChangeOrderStatus(request);
+            return CreateSuccessResult(result);
+        }
+
         //[HttpPost("ordering")]
         //[AllowAnonymous]
         //[ProducesResponseType(typeof(ActionResponse<OrderResponse>), (int)HttpStatusCode.OK)]

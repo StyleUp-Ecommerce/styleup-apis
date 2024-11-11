@@ -3,12 +3,17 @@ using CleanBase.Core.Domain.Domain.Services.GenericBase;
 using CleanBase.Core.Domain.Exceptions;
 using CleanBase.Core.Extensions;
 using CleanBase.Core.Services.Core.Base;
+using Core.Caching;
+using Core.Caching.Strategies.Cart;
+using Core.Caching.Strategies.Provider;
+using Core.Data.Repositories;
 using Core.Entities;
 using Core.Services;
 using Core.ViewModels.Requests.Cart;
 using Core.ViewModels.Responses.Cart;
 using Core.ViewModels.Responses.CartItem;
 using Core.ViewModels.Responses.CustomCanvas;
+using Domain.Extensions.Linq;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -16,9 +21,12 @@ namespace Domain.Services
 {
     public class CartService : ServiceBase<Cart, CartRequest, CartResponse, GetAllCartRequest>, ICartService
     {
-        ICustomCanvasService _customCanvasService;
-        public CartService(ICoreProvider coreProvider, IUnitOfWork unitOfWork, ICustomCanvasService customCanvasService) : base(coreProvider, unitOfWork)
+        private readonly ICustomCanvasService _customCanvasService;
+        private readonly ICacheProvider _cacheProvider;
+
+        public CartService(ICoreProvider coreProvider, IUnitOfWork unitOfWork, ICustomCanvasService customCanvasService, ICacheProvider cacheProvider) : base(coreProvider, unitOfWork)
         {
+            _cacheProvider = cacheProvider;
             _customCanvasService = customCanvasService;
         }
 
@@ -40,7 +48,7 @@ namespace Domain.Services
                                 CartItems = new List<CartItem>()
                             };
 
-                var existingItem = cart.CartItems.FirstOrDefault(ci =>
+                var existingItem = cart?.CartItems?.FirstOrDefault(ci =>
                                         ci.CustomCanvasId == request.CustomCanvasId
                                         && string.Equals(request.Size, ci.Size, StringComparison.OrdinalIgnoreCase));
 
@@ -49,27 +57,26 @@ namespace Domain.Services
                     existingItem.Quantity += request.Quantity;
 
                     if (existingItem.Quantity <= 0)
-                        cart.CartItems.Remove(existingItem);
+                        cart?.CartItems?.Remove(existingItem);
                 }
                 else
                 {
-                    cart.CartItems.Add(new CartItem
+                    cart?.CartItems?.Add(new CartItem
                     {
-                        CartId = cart.Id,
                         Quantity = request.Quantity,
                         Size = request.Size.ToUpper(),
                         CustomCanvasId = request.CustomCanvasId
                     });
                 }
 
-                var canvasIds = cart.CartItems.Select(ci => ci.CustomCanvasId).ToList();
+                var canvasIds = cart?.CartItems?.Select(ci => ci.CustomCanvasId).ToList();
 
                 var productDict = (await _customCanvasService.GetDictionaryByIds(
                     canvasIds,
                     new Expression<Func<CustomCanvas, object>>[] { canvas => canvas.Content }));
 
 
-                if (cart.Id == Guid.Empty)
+                if (cart?.Id == Guid.Empty)
                     Repository.Add(cart);
 
                 await UnitOfWork.SaveChangesAsync();
@@ -94,7 +101,7 @@ namespace Domain.Services
                                     Id = product.Id,
                                     Price = product.Price,
                                     Images = product.Images.Split(",").ToList(),
-                                    Name = product?.Name
+                                    Name = product?.Name ?? ""
                                 }
                             };
                     })
@@ -108,7 +115,7 @@ namespace Domain.Services
                         {
                             return 0m;
                         }
-                        return product.Price;
+                        return product.Price * ci.Quantity;
                     })
                 };
             }
@@ -117,7 +124,7 @@ namespace Domain.Services
         {
             var authorId = IdentityProvider.Identity.UserId;
 
-            var cart = await Repository
+            var cart =  await Repository
                 .Where(p => p.AuthorId == authorId)
                 .Include(p => p.CartItems)
                 .SingleOrDefaultAsync()
@@ -133,7 +140,12 @@ namespace Domain.Services
                 {
                         canvas => canvas.Content
                 };
-            var productDict = (await _customCanvasService.GetDictionaryByIds(canvasIds, excludedProperties));
+
+            var customCanvasData = await UnitOfWork.Repository<ICustomCanvasRepository>().Where(canvas => canvasIds.Contains(canvas.Id))
+                                .ExcludeProperties(excludedProperties)
+                                .ToListAsync();
+
+            var productDict = customCanvasData.ToDictionary(canvas => canvas.Id);
 
             return new CartResponse
             {
@@ -169,7 +181,7 @@ namespace Domain.Services
                     {
                         return 0m;
                     }
-                    return product.Price;
+                    return product.Price * ci.Quantity;
                 })
             };
         }

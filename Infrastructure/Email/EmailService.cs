@@ -117,7 +117,7 @@ namespace Infrastructure.Email
                     { "totalPrice", order?.TotalPrice.ToString() + " VND" },
                     { "recipientName", order?.RecipientName },
                     { "orderStatus", order?.OrderStatus },
-                    { "recipientEmail", order?.RecipientEmail },
+                    { "RecipientMail", order?.RecipientMail },
                     { "recipientPhone", order?.RecipientPhone },
                     { "address", order?.Address }
                 };

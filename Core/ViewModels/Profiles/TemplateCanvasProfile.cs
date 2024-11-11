@@ -26,7 +26,7 @@ namespace Core.ViewModels.Profiles
             CreateMap<TemplateCanvas, TemplateCanvasFilterResponse>()
                 .IncludeMembers(src => src.Provider)
                 .ForMember(dest => dest.Provider, opt => opt.MapFrom(src => src.Provider))
-                .ForMember(dest => dest.MinPrice, opt => opt.MapFrom(src => src.CustomCanvas.Min(c => c.Price)))
+                .ForMember(dest => dest.MinPrice, opt => opt.MapFrom(src => src.CustomCanvas.Min(c => (decimal?)c.Price) ?? 0m))
                 .ForMember(dest => dest.Colors, opt => opt.MapFrom(src => src.CustomCanvas != null
                     ? string.Join(",", src.CustomCanvas.Select(c => c.Color))
                     : string.Empty))

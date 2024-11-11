@@ -33,7 +33,7 @@ public static class EmailBody
         string totalPrice, 
         string recipientName, 
         string orderStatus,
-        string recipientEmail,
+        string RecipientMail,
         string recipientPhone,
         string address
         )
@@ -93,7 +93,7 @@ public static class EmailBody
                     <li><strong>Delivery Address:</strong> {address}</li>
                     <li><strong>Recipient Name:</strong> {recipientName}</li>
                     <li><strong>Recipient Phone:</strong> {recipientPhone}</li>
-                    <li><strong>Recipient Email:</strong> {recipientEmail}</li>
+                    <li><strong>Recipient Email:</strong> {RecipientMail}</li>
                 </ul>
                 
                 <p>We are working hard to get your order to you as quickly as possible. You will receive another email once your order has been shipped. In the meantime, if you have any questions, feel free to reach out to us.</p>

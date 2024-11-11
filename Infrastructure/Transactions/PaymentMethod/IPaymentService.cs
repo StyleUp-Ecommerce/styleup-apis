@@ -15,5 +15,7 @@ namespace Infrastructure.Transactions.PaymentMethod
         string CreatePaymentRequest(TransactionRequest transaction, OrderResponse orderData);
         bool ValidateSignature(string queryString, string hashSecret);
         Task<Transaction> ProcessPaymentResponseAsync(string queryString);
+        Task<string> CheckTransaction(string orderCode, string transactionDate, decimal totalPrice);
+        Task StartCheckTransactionJob(string orderCode, string transactionDate, decimal totalPrice);
     }
 }

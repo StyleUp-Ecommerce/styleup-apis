@@ -26,7 +26,7 @@ namespace Domain.Identity.Email
                         parameters["totalPrice"], 
                         parameters["recipientName"],
                         parameters["orderStatus"],
-                        parameters["recipientEmail"],
+                        parameters["RecipientMail"],
                         parameters["recipientPhone"],
                         parameters["address"]
                     )

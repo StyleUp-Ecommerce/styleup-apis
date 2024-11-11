@@ -43,10 +43,11 @@ namespace APis.Controllers
 
 
         [HttpPost]
-        [Authorize(
-            AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,
-            Policy = ApiPolicy.AdminWriteAccess
-        )]
+        //[Authorize(
+        //    AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,
+        //    Policy = ApiPolicy.WriteAccess
+        //)]
+        [AllowAnonymous]
         [ProducesResponseType(typeof(ActionResponse<CustomCanvasResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(FailActionResponse), (int)HttpStatusCode.BadRequest)]
         public virtual async Task<IActionResult> CreateOrUpdate([FromBody] CustomCanvasRequest entity)

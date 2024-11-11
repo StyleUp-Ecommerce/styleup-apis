@@ -23,7 +23,8 @@ namespace Core.ViewModels.Profiles
             CreateMap<ListResult<OrderItem>, ListResult<OrderItemRequest>>();
             CreateMap<OrderItemDetailResponse, OrderItem>()
                 .ReverseMap()
-                .ForMember(dest => dest.Image, opt => opt.MapFrom(src => StringSpliter.StringToList(src.CustomCanvas.Images)[0]));
+                .ForMember(dest => dest.Image, opt => opt.MapFrom(src => StringSpliter.StringToList(src.CustomCanvas.Images)[0]))
+                .ForMember(dest => dest.Color, opt => opt.MapFrom(src => src.CustomCanvas.ColorString));
 
 
         }

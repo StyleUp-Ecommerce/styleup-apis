@@ -7,6 +7,8 @@ using Core.Entities;
 using Core.Services;
 using Core.ViewModels.Requests.Transaction;
 using Core.ViewModels.Responses.Transaction;
+using Hangfire;
+using Infrastructure.Jobs;
 using Infrastructure.Transactions.PaymentMethod;
 using System;
 using System.Collections.Generic;
@@ -36,7 +38,6 @@ namespace Infrastructure.Transactions
 
         public async Task<CreateTransactionResponse> CreateTransactionRequest(TransactionRequest request)
         {
-
             var order = await _orderService.Ordering(request.Order);
 
             var paymentMessage = request.PaymentMethod switch
@@ -46,19 +47,24 @@ namespace Infrastructure.Transactions
                 _ => throw new DomainException("Phương thức thanh toán không hợp lệ.","NOT_EXIT_METHOD",null,400,null)
             };
 
-
             var transaction = new Transaction
             {
                 Id = new Guid(),
                 Status = nameof(TransactionStastusEnum.Pending),
                 TransactionCode = order.OrderCode,
                 PaymentMethod = request.PaymentMethod,
-                PaymentUrl = paymentMessage,
-                ReturnUrl = request.ReturnUrl + HttpUtility.UrlEncode($"/{order.OrderCode}"),
+                PaymentUrl = request.PaymentMethod == nameof(PaymentMethodEnum.OnlinePayment) ? paymentMessage : request.ReturnUrl + "/detail-order?vnp_TxnRef="+HttpUtility.UrlEncode($"{order.OrderCode}"),
+                ReturnUrl = request.PaymentMethod == nameof(PaymentMethodEnum.OnlinePayment) ? request.ReturnUrl + HttpUtility.UrlEncode($"/{order.OrderCode}") : request.ReturnUrl + "/detail-order?vnp_TxnRef="+HttpUtility.UrlEncode($"{order.OrderCode}"),
                 AlreadyPaid = 0,
                 Unpaid = order.TotalPrice,
                 OrderId = order.Id,
             };
+
+            BackgroundJob.Enqueue(() => _paymentGateway.StartCheckTransactionJob(
+                    order.OrderCode,
+                    DateTime.UtcNow.AddHours(7).ToString("yyyyMMddHHmmss"),
+                    order.TotalPrice
+                ));
 
             await this.Repository.AddAsync(transaction);
 
@@ -66,7 +72,7 @@ namespace Infrastructure.Transactions
             {
                 otp.AfterMap((src, dest) =>
                 {
-                    dest.Message = paymentMessage;
+                    dest.Message = request.PaymentMethod == nameof(PaymentMethodEnum.OnlinePayment) ? paymentMessage : request.ReturnUrl + "/detail-order?vnp_TxnRef="+HttpUtility.UrlEncode($"{order.OrderCode}");
                 });
             });
 

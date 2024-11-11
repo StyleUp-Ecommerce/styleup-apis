@@ -1,4 +1,5 @@
 ﻿using CleanBase.Core.Domain.Exceptions;
+using CleanBase.Core.Services.Core.Base;
 using Core.Entities;
 using Core.Helpers;
 using Core.Identity.Email.Enums;
@@ -10,11 +11,9 @@ using Core.ViewModels.Requests.User;
 using Core.ViewModels.Responses.Identity;
 using Domain.Identity.Extensions;
 using IdentityModel;
-using Infrastructure.Extensions;
+using Infrastructure.Context;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -24,20 +23,22 @@ namespace Infrastructure.Identity.Services
 {
     public sealed class IdentityService : IIdentityService
     {
-        private readonly ILogger<IdentityService> _logger;
+        private readonly ISmartLogger _logger;
         private readonly UserManager<User> _userManager;
         private readonly IPasswordHasher<User> _passwordHasher;
         private readonly SignInManager<User> _signInManager;
         private readonly JwtService _jwtService;
         private readonly IEmailService _emailService;
+        private readonly AppDbContext _context;
 
         public IdentityService(
-            ILogger<IdentityService> logger,
+            ISmartLogger logger,
             UserManager<User> userManager,
             IPasswordHasher<User> passwordHasher,
             SignInManager<User> signInManager,
             JwtService jwtService,
-            IEmailService emailService
+            IEmailService emailService,
+            AppDbContext appDbContext
         )
         {
             _logger = logger;
@@ -46,6 +47,7 @@ namespace Infrastructure.Identity.Services
             _signInManager = signInManager;
             _jwtService = jwtService;
             _emailService = emailService;
+            _context = appDbContext;
         }
 
         public async Task<User> FindUserAsync(FindUserRequest request)
@@ -57,7 +59,7 @@ namespace Infrastructure.Identity.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, ex.Message, nameof(FindUserAsync));
+                _logger.Error(ex, ex.Message, nameof(FindUserAsync));
                 throw;
             }
         }
@@ -97,7 +99,7 @@ namespace Infrastructure.Identity.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, ex.Message, nameof(CreateUserAsync));
+                _logger.Error(ex, ex.Message, nameof(CreateUserAsync));
                 throw;
             }
         }
@@ -127,7 +129,7 @@ namespace Infrastructure.Identity.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, ex.Message, nameof(FindUserAsync));
+                _logger.Error(ex, ex.Message, nameof(FindUserAsync));
                 throw;
             }
         }
@@ -162,7 +164,7 @@ namespace Infrastructure.Identity.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, ex.Message, nameof(VerifyEmailAsync));
+                _logger.Error(ex, ex.Message, nameof(VerifyEmailAsync));
                 throw;
             }
         }
@@ -190,7 +192,7 @@ namespace Infrastructure.Identity.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, ex.Message, nameof(GenerateResetPasswordTokenAsync));
+                _logger.Error(ex, ex.Message, nameof(GenerateResetPasswordTokenAsync));
                 throw;
             }
         }
@@ -217,7 +219,7 @@ namespace Infrastructure.Identity.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, ex.Message, nameof(ResetPasswordAsync));
+                _logger.Error(ex, ex.Message, nameof(ResetPasswordAsync));
                 throw;
             }
         }
@@ -248,7 +250,7 @@ namespace Infrastructure.Identity.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, ex.Message, nameof(ChangePasswordAsync));
+                _logger.Error(ex, ex.Message, nameof(ChangePasswordAsync));
                 throw;
             }
         }
@@ -271,7 +273,7 @@ namespace Infrastructure.Identity.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, ex.Message, nameof(DeleteUserAsync));
+                _logger.Error(ex, ex.Message, nameof(DeleteUserAsync));
                 throw;
             }
         }
@@ -310,7 +312,7 @@ namespace Infrastructure.Identity.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, ex.Message, nameof(RegisterExternalAsync));
+                _logger.Error(ex, ex.Message, nameof(RegisterExternalAsync));
                 throw;
             }
         }
@@ -329,7 +331,7 @@ namespace Infrastructure.Identity.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, ex.Message, nameof(GenerateTokensAsync));
+                _logger.Error(ex, ex.Message, nameof(GenerateTokensAsync));
                 throw;
             }
         }
@@ -373,7 +375,7 @@ namespace Infrastructure.Identity.Services
 
             if (email == null)
             {
-                throw new Exception("Email not found in identities.");
+                throw new DomainException("Email not found in identities.");
             }
 
             var searchResult = await FindUserAsync(new(email));
@@ -388,36 +390,47 @@ namespace Infrastructure.Identity.Services
             //    .AddClaimsAsync(searchResult, claimsss)
             //    .ConfigureAwait(false);
 
-            
-
             if (searchResult == null)
             {
-                var firstName = name?.Split(" ")[0] ?? "Unknown";
-                var lastName = name?.Split(" ")[^1] ?? "User";
-
-                var userNew = new CreateUserRequest(
-                    FirstName: firstName,
-                    LastName: lastName,
-                    Email: email,
-                    Password: Randomize.RandomString(10).GetHashCode().ToString()
-                );
-
-                var newClaims = searchResult.SelectClaims();
-                newClaims.Add(new Claim(JwtClaimTypes.Scope, ApiScope.Read));
-                newClaims.Add(new Claim(JwtClaimTypes.Scope, ApiScope.Delete));
-                newClaims.Add(new Claim(JwtClaimTypes.Scope, ApiScope.Write));
-                newClaims.Add(new Claim(JwtClaimTypes.Scope, ApiScope.Update));
-
-                var result = await _userManager.CreateAsync(userNew.ToEntity()).ConfigureAwait(false);
-
-                if (!result.Succeeded)
+               using(var transaction = _context.Database.BeginTransaction())
                 {
-                    throw new Exception("User creation failed: " + string.Join(", ", result.Errors.Select(e => e.Description)));
+                    try
+                    {
+                        var firstName = name?.Split(" ")[0] ?? "Unknown";
+                        var lastName = name?.Split(" ")[^1] ?? "User";
+
+                        var userNew = new CreateUserRequest(
+                            FirstName: firstName,
+                            LastName: lastName,
+                            Email: email,
+                            Password: Randomize.RandomString(10).GetHashCode().ToString()
+                        ).ToEntity();
+
+                        var result = await _userManager.CreateAsync(userNew).ConfigureAwait(false);
+
+                        if (!result.Succeeded)
+                        {
+                            throw new Exception("User creation failed: " + string.Join(", ", result.Errors.Select(e => e.Description)));
+
+                        }
+                        var newClaims = userNew.SelectClaims() ?? new List<Claim>();
+                        newClaims.Add(new Claim(JwtClaimTypes.Scope, ApiScope.Read));
+                        newClaims.Add(new Claim(JwtClaimTypes.Scope, ApiScope.Delete));
+                        newClaims.Add(new Claim(JwtClaimTypes.Scope, ApiScope.Write));
+                        newClaims.Add(new Claim(JwtClaimTypes.Scope, ApiScope.Update));
+
+
+                        await _userManager.AddClaimsAsync(userNew, newClaims).ConfigureAwait(false);
+                        searchResult = userNew;
+
+                        transaction.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.Error(ex.Message, ex);
+                        await transaction.RollbackAsync();
+                    }
                 }
-
-                searchResult = await FindUserAsync(new(email));
-                await _userManager.AddClaimsAsync(searchResult, newClaims).ConfigureAwait(false);
-
             }
 
             var tokens = await GenerateTokensAsync(searchResult);

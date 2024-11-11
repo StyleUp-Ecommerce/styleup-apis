@@ -16,6 +16,7 @@ using Core.ViewModels.Responses.OrderItem;
 using Core.ViewModels.Responses.Transaction;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.SqlServer.Server;
 using System.Linq.Expressions;
 using System.Web;
 
@@ -38,6 +39,25 @@ namespace Domain.Services
             _emailService = emailService;
         }
 
+        protected override IQueryable<Order> ApplyGetAllOperator(IQueryable<Order> query)
+        {
+            return query
+                .Include(p => p.Transaction)
+                .Include(p => p.OrderItems);
+        }
+
+        public async Task<bool> ChangeOrderStatus(ChangeOrderStatusRequest request)
+        {
+            var data = this.Repository.Where(p => p.OrderCode == request.OrderCode).FirstOrDefault();
+
+            if (data is null)
+                throw new DomainException("Order not exits", "NOT_EXITS", null, 400, null);
+
+            data.StatusString = request.Status.Trim();
+            UnitOfWork.SaveChanges();
+
+            return true;
+        }
         public async Task<GetOrderByCodeResponse> GetOrderByCode(string code)
         {
             var decodedCode = HttpUtility.UrlDecode(code);
@@ -46,6 +66,7 @@ namespace Domain.Services
                 .AsNoTracking()
                 .Include(p => p.OrderItems)
                 .ThenInclude(p => p.CustomCanvas)
+                .Include(p => p.Transaction)
                 .Select(p => new
                 {
                     Order = Mapper.Map<OrderResponse>(p),
@@ -56,7 +77,7 @@ namespace Domain.Services
             if (orderResponse is null)
                 throw new DomainException("Order not exits !", "NOT_EXITS", null, 400, null);
 
-            orderResponse.Order.Items = orderResponse?.OrderItemsDetail?.ToList();
+            orderResponse.Order.Items = orderResponse?.OrderItemsDetail?.ToList() ?? new List<OrderItemDetailResponse>();
             orderResponse.Order.TotalPrice = orderResponse.OrderItemsDetail.Sum(p => p.Quantity*p.Price);
 
             var transactionWithOrderCodeResponse = this.UnitOfWork.Repository<ITransactionRepository>()
@@ -103,7 +124,7 @@ namespace Domain.Services
                             dest.VoucherCode = voucher?.Code ?? null;
                             dest.OrderCode = Randomize.RandomString(5).ToUpper()+ " "+  DateTimeHelper.VnNow().ToString("MM/dd/yyyy");
                             dest.Id = Guid.NewGuid();
-                            dest.RecipientMail = request.RecipientEmail;
+                            dest.RecipientMail = request.RecipientMail;
                         });
                     });
 
@@ -144,12 +165,12 @@ namespace Domain.Services
                             dest.TotalPrice = responseItems.Sum(p => p.Price * p.Quantity);
                             dest.DiscountValue = voucher?.DiscountValue ?? 0;
                             dest.DiscountType = voucher?.DiscountType;
-                            dest.RecipientEmail = currenOrder.RecipientMail;
+                            dest.RecipientMail = currenOrder.RecipientMail;
                         });
                     });
 
                     //var param = _emailService.GenerateOrderedParameters(result.RecipientName, result);
-                    //await _emailService.SendAsync(EmailType.Ordered, result.RecipientEmail, param);
+                    //await _emailService.SendAsync(EmailType.Ordered, result.RecipientMail, param);
 
                     tran.Commit();
                     UnitOfWork.SaveChanges();
